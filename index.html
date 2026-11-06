@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bình sai tổng hợp</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bình sai">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0f5f55">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#eef1ee;--fg:#18211d;--mut:#586760;--card:#fff;--line:#cfd8d2;--ac:#0f5f55;--acf:#fff;--err:#b3261e;--hl:#e3efe9}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101513;--fg:#e6ece8;--mut:#98a69e;--card:#18201c;--line:#2c3832;--ac:#58c4b3;--acf:#07130f;--err:#ff8a80;--hl:#1f2e28}}
+:root[data-theme="dark"]{--bg:#101513;--fg:#e6ece8;--mut:#98a69e;--card:#18201c;--line:#2c3832;--ac:#58c4b3;--acf:#07130f;--err:#ff8a80;--hl:#1f2e28}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:920px;margin:0 auto;padding:14px}
+h1{font-size:1.45rem;margin:.2em 0 .1em;letter-spacing:-.01em}
+h2{font-size:1.05rem;margin:0 0 .6em}
+.sub{color:var(--mut);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+label{display:block;font-weight:600;font-size:.9rem;margin-bottom:3px}
+.hint[hidden]{display:none}
+.hint{font-weight:400;color:var(--mut);display:block;font-size:.8rem}
+textarea,input,select{width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px}
+textarea{min-height:150px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;white-space:pre}
+.par{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.chk{display:flex;gap:8px;align-items:center;font-weight:400}
+.chk input{width:auto}
+button{font:inherit;font-weight:600;border-radius:8px;border:1px solid var(--ac);padding:10px 16px;cursor:pointer;background:transparent;color:var(--ac)}
+button.main{background:var(--ac);color:var(--acf)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.bar{display:flex;gap:8px;flex-wrap:wrap}
+.sc{overflow-x:auto;margin-bottom:10px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:.85rem}
+th,td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:right;white-space:nowrap}
+th{background:var(--hl)}
+th:first-child,td:first-child{text-align:left}
+.err{color:var(--err);font-weight:600}
+.sum{background:var(--hl);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.sum div{margin:2px 0}
+.rep{background:#fff;color:#000;font-family:"Times New Roman",Times,serif;font-size:14px;padding:14px;border:1px solid var(--line);border-radius:6px;margin-bottom:12px}
+.rep h1{text-align:center;font-size:1.5rem;margin:.2em 0 .6em}
+.rep h3{text-align:center;font-size:1.05rem;margin:16px 0 6px}
+.rep table{width:auto;min-width:55%;margin:0 auto 6px;font-size:.92rem}
+.rep table.w{min-width:100%}
+.rep th,.rep td{border:1px solid #000;padding:2px 8px;text-align:center;background:#fff;color:#000}
+.rep th{font-weight:400}
+.rep td.l{text-align:left}
+.rep .ln{margin:2px 0}
+@media print{body{background:#fff}.card,.sub,.noprint{display:none!important}.rep{border:0;padding:0}main{padding:0}.rep table.lay{width:100%;min-width:0;margin:0;font-size:inherit;table-layout:fixed}.rep table.lay>thead>tr>td,.rep table.lay>tbody>tr>td{border:0;padding:0;text-align:left;white-space:normal;background:none}.rep table.lay>thead img{display:block;margin:0 0 3mm auto;height:14mm;width:auto}}
+.gr{min-width:330px;table-layout:fixed}
+.gr th,.gr td{border:1px solid var(--line);padding:0;text-align:center;white-space:normal}
+.gr .tt{background:var(--tt);color:var(--fg);padding:6px;font-size:1rem}
+.gr .hd{background:transparent;color:var(--hb);padding:5px 2px;font-size:.85rem}
+.gr input{border:0;border-radius:0;background:transparent;text-align:center;padding:7px 2px;min-width:0;font-size:.9rem}
+.gr input:focus-visible{outline-offset:-2px}
+:root{--tt:#f6c8a0;--hb:#1b5fb4;--warn:#9a5b00;--ok:#15803d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--tt:#4a3320;--hb:#8ab8ff;--warn:#ffb454;--ok:#6fd49a}}
+:root[data-theme="dark"]{--tt:#4a3320;--hb:#8ab8ff;--warn:#ffb454;--ok:#6fd49a}
+.gr tbody{counter-reset:rn}.gr tbody tr{counter-increment:rn}.gr td.rn{background:var(--hl);color:var(--mut);font-size:.75rem;user-select:none}.gr td.rn::before{content:counter(rn)}
+.warn{color:var(--warn)}.okc{color:var(--ok);font-weight:600}.ln{margin:4px 0}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.tile{display:block;text-decoration:none;color:var(--fg);background:var(--card);border:1px solid var(--line);border-left:6px solid var(--ac);border-radius:12px;padding:20px 16px}
+.tile b{display:block;font-size:1.15rem;color:var(--ac);margin-bottom:4px}
+.tile span{color:var(--mut);font-size:.9rem}
+.tile:active,.tile:focus-visible{background:var(--hl);outline:2px solid var(--ac)}
+.top{margin-bottom:6px}
+.view[hidden]{display:none}
+.lang{display:flex;justify-content:flex-end;align-items:center;gap:6px;margin-bottom:6px}
+.lang label{margin:0;font-weight:600}
+.lang select{width:auto;padding:5px 8px}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand>div{min-width:0}
+.logo{flex:none;height:56px;width:auto}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo{filter:brightness(2.2)}}
+:root[data-theme="dark"] .logo{filter:brightness(2.2)}
+#v-ls .grid{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+</style></head><body><main>
+<div class="lang noprint"><label for="lang"><span aria-hidden="true">🌐</span> <span data-i="lang"></span></label><select id="lang"></select></div>
+<div id="v-home" class="view">
+<div class="brand"><div><h1 data-i="title"></h1>
+<p class="sub" data-i="author"></p></div><img class="logo noprint" src="logo.png" alt="" width="57" height="56"></div>
+<p class="sub" data-i="choose"></p>
+<div class="tiles">
+<a class="tile" href="#mb"><b data-i="mb.t"></b><span data-i="mb.d"></span></a>
+<a class="tile" href="#dc"><b data-i="dc.t"></b><span data-i="dc.d"></span></a>
+<a class="tile" href="#ls"><b data-i="ls.t"></b><span data-i="ls.d"></span></a>
+</div></div>
+<div id="v-mb" class="view" hidden>
+<div class="top noprint"><button type="button" class="back" data-i="back"></button></div>
+<div class="brand"><div><h1 class="noprint" data-i="mb.h1"></h1>
+<p class="sub" data-i="author"></p></div><img class="logo noprint" src="logo.png" alt="" width="57" height="56"></div>
+
+<section class="card"><h2 data-i="sec.data"></h2>
+<div class="grid"><div id="c"></div><div id="g"></div><div id="d"></div></div>
+<p class="hint" data-i="hint.mb"></p>
+</section>
+
+<section class="card"><h2 data-i="sec.par"></h2>
+<div class="par">
+<div><label for="pn" data-i="project"></label><input id="pn" type="text"></div>
+<div><label for="pa">a (mm)</label><input id="pa" type="text" inputmode="decimal" value="2"></div>
+<div><label for="pb">b (mm/km)</label><input id="pb" type="text" inputmode="decimal" value="2"></div>
+<div><label for="pg" data-i="pg"></label><input id="pg" type="text" inputmode="decimal" value="5"></div>
+<div><label for="ph" data-i="ph"></label><input id="ph" type="text" inputmode="decimal" value="0"></div>
+<div><label for="pj" data-i="pj"></label><select id="pj"><option value="n" data-i="pj.n"></option><option value="g">Gauss (k0 = 1)</option><option value="u3">UTM 3° (0.9999)</option><option value="u6">UTM 6° (0.9996)</option></select></div>
+</div>
+<p><label class="chk"><input type="checkbox" id="cc"> <span data-i="cc"></span></label></p>
+<div class="bar"><button class="main" id="go" data-i="solve"></button><button id="ex" data-i="ex"></button><button id="cl" data-i="cl"></button></div>
+</section>
+
+<section id="res"></section>
+</div>
+<div id="v-dc" class="view" hidden>
+<div class="top noprint"><button type="button" class="back" data-i="back"></button></div>
+<div class="brand"><div><h1 class="noprint" data-i="dc.h1"></h1>
+<p class="sub" data-i="author"></p></div><img class="logo noprint" src="logo.png" alt="" width="57" height="56"></div>
+<section class="card"><h2 data-i="sec.data"></h2>
+<div class="grid"><div id="hg"></div><div id="ht"></div></div>
+<p class="hint" data-i="hint.dc"></p>
+</section>
+<section class="card"><h2 data-i="sec.par"></h2>
+<div class="par">
+<div><label for="hpn" data-i="project"></label><input id="hpn" type="text"></div>
+<div><label for="hcap" data-i="hcap"></label><select id="hcap"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option></select></div>
+</div>
+<p></p>
+<div class="bar"><button class="main" id="hgo" data-i="solve"></button><button id="hex" data-i="ex"></button><button id="hcl" data-i="cl"></button></div>
+</section>
+<section id="hres"></section>
+</div>
+<div id="v-ls" class="view" hidden>
+<div class="top noprint"><button type="button" class="back" data-i="back"></button></div>
+<div class="brand"><div><h1 class="noprint" data-i="ls.h1"></h1>
+<p class="sub" data-i="author"></p></div><img class="logo noprint" src="logo.png" alt="" width="57" height="56"></div>
+<section class="card"><h2 data-i="sec.data"></h2>
+<div class="grid"><div id="lb"></div><div id="lc"></div><div id="lt"></div><div id="lx"></div></div>
+<p class="hint" data-i="hint.ls"></p></section>
+<section class="card"><h2 data-i="l.imp"></h2>
+<div class="par">
+<div><label for="lfile" data-i="l.file"></label><input id="lfile" type="file" multiple accept=".gsi,.GSI,.txt,.dat,.DAT"></div>
+<div><label for="licy" data-i="l.impcy"></label><input id="licy" type="text" inputmode="numeric" value="1"></div>
+<div><label for="ltp" data-i="l.tp"></label><input id="ltp" type="text" value="TP,CP"></div>
+</div><p></p><div class="bar"><button class="main" id="limp" data-i="l.impb"></button></div><p id="limsg" class="hint"></p>
+</section>
+<section class="card" id="lphoto"><h2 data-i="ph.t"></h2>
+<p class="hint" data-i="ph.d"></p><p></p>
+<div class="par">
+<div><label for="phcy" data-i="ph.cy"></label><input id="phcy" type="text" inputmode="numeric" value="1"></div>
+<div><label for="phcam" data-i="ph.cam"></label><input id="phcam" type="file" accept="image/*" capture="environment"></div>
+<div><label for="phpick" data-i="ph.pick"></label><input id="phpick" type="file" accept="image/*"></div>
+</div>
+<img id="phimg" alt="">
+<div class="bar"><button class="main" id="phgo" type="button" data-i="ph.read"></button></div>
+<p id="phmsg" class="hint"></p>
+<div id="pht"></div>
+<p><label class="chk"><input type="checkbox" id="phrp"><span data-i="ph.rep"></span></label></p>
+<div class="bar"><button type="button" id="phchk" data-i="ph.chk"></button><button class="main" type="button" id="phput" data-i="ph.put"></button><button type="button" id="phclr" data-i="ph.clr"></button></div>
+<div id="phsum"></div>
+<details><summary data-i="ph.raw"></summary><textarea id="phraw" readonly rows="6"></textarea></details>
+<style>#phimg{display:none;max-width:100%;max-height:320px;margin:10px 0;border:1px solid var(--line);border-radius:8px}.ph-w{color:var(--err);margin:3px 0}.ph-i{color:var(--mut);margin:3px 0}#phsum{margin:8px 0}</style>
+</section>
+<section class="card"><h2 data-i="sec.par"></h2>
+<div class="par">
+<div><label for="lpn" data-i="l.prj"></label><input id="lpn" type="text"></div>
+<div><label for="lcn" data-i="l.pr"></label><input id="lcn" type="text"></div>
+<div><label for="lda" data-i="l.loc"></label><input id="lda" type="text"></div>
+<div><label for="lmd" data-i="l.mode"></label><select id="lmd"><option value="fixed" data-i="l.m1"></option><option value="free" data-i="l.m2"></option></select></div>
+<div><label for="lcp" data-i="l.cap"></label><select id="lcp"><option value="1">I</option><option value="2" selected>II</option></select></div>
+<div><label for="ltk" data-i="l.tk"></label><input id="ltk" type="text" inputmode="decimal" value="2"></div>
+<div><label for="llm" data-i="l.lim"></label><input id="llm" type="text" inputmode="decimal"></div>
+<div><label for="lsg" data-i="l.sgh"></label><input id="lsg" type="text" inputmode="decimal" value="100"></div>
+<div><label for="lrl" data-i="l.rel"></label><input id="lrl" type="text" inputmode="decimal" value="2"></div>
+<div><label for="lrc" data-i="l.rc"></label><input id="lrc" type="text" inputmode="numeric"></div>
+</div><p></p>
+<div class="bar"><button class="main" id="lgo" data-i="solve"></button><button id="lex" data-i="ex"></button><button id="lcl" data-i="cl"></button></div>
+</section>
+<section id="lres"></section>
+</div>
+</main>
+<script>
+const LANGS={vi:'Tiếng Việt',en:'English',zh:'中文 (简体)',ja:'日本語',ko:'한국어',fr:'Français',ru:'Русский',es:'Español'};
+const I18N={
+vi:{
+title:`Bình sai tổng hợp`,author:`Nguyễn Xuân Khoát-ĐH MĐC Hà nội`,choose:`Chọn loại bình sai:`,
+'mb.t':`Bình sai mặt bằng`,'mb.d':`Lưới đường chuyền, tam giác: góc + cạnh, UTM/Gauss`,
+'dc.t':`Bình sai độ cao`,'dc.d':`Lưới thủy chuẩn: điểm gốc + tuyến chênh cao`,
+back:`← Trang chủ`,'mb.h1':`Bình sai lưới mặt bằng`,'dc.h1':`Bình sai lưới độ cao`,
+'sec.data':`Số liệu`,'sec.par':`Tham số`,
+'hint.mb':`Nhập từng ô như Excel (Enter xuống dòng dưới). Có thể copy cả vùng từ Excel, bấm vào ô đầu tiên rồi dán: dữ liệu tự trải ra các ô.`,
+'hint.dc':`Nhập từng ô như Excel (Enter xuống dòng dưới). Có thể copy cả vùng từ Excel, bấm vào ô đầu tiên rồi dán. Điểm nào không có trong bảng điểm gốc sẽ được coi là điểm mới.`,
+project:`Công trình`,pg:`Sai số đo góc (")`,ph:`Độ cao TB H (m)`,pj:`Phép chiếu`,'pj.n':`Không cải chính`,cc:`Cải chính góc theo phép chiếu`,
+solve:`Bình sai`,ex:`Nạp ví dụ`,cl:`Xoá hết`,hcap:`Hạng lưới (I–IV)`,
+'g.ctl':`Điểm gốc`,'g.ang':`Nhập góc đo`,'g.dis':`Nhập cạnh đo`,'g.ht':`Tuyến đo chênh cao`,
+'h.name':`Tên điểm`,'h.left':`Trái`,'h.mid':`Giữa`,'h.right':`Phải`,'h.deg':`Độ`,'h.min':`Phút`,'h.sec':`Giây`,
+'h.from':`Điểm đầu`,'h.to':`Điểm cuối`,'h.len':`Chiều dài cạnh`,'h.elev':`Cao độ (m)`,'h.dh':`Chênh cao (m)`,'h.lenkm':`Dài (km)`,
+add5:`+ Thêm 5 dòng`,lang:`Ngôn ngữ`,
+'r.mb':`BÌNH SAI LƯỚI MẶT BẰNG`,'r.params':`Thông số lưới`,'r.nctl':`Số điểm gốc:`,'r.ncor':`Số cải chính:`,'r.nnew':`Số điểm mới:`,
+'r.aerr':`Sai số đo góc:`,'r.nd':`Số cạnh đo:`,'r.derr':`Sai số đo cạnh:`,'r.na':`Số góc đo:`,'r.az':`Phương vị đo:`,
+'r.ctl':`TỌA ĐỘ GỐC`,'r.dsides':`CẠNH SAU BÌNH SAI`,'r.dangs':`GÓC SAU BÌNH SAI`,'r.rel':`BẢNG TƯƠNG HỖ VỊ TRÍ ĐIỂM`,'r.adjc':`TỌA ĐỘ BÌNH SAI`,
+'r.px':`Tọa độ X`,'r.py':`Tọa độ Y`,'t.side':`Tên cạnh`,'t.dist':`K Cách`,'t.ell':`Ellip`,'t.cc':`Số CC`,'t.v':`Shc`,'t.adj':`Cạnh bs`,
+'t.angb':`Góc trước bs`,'t.ccmp':`C.c mp (")`,'t.anga':`Góc sau bs`,'t.azm':`Phương vị`,
+'r.iter':`-Số lần lặp bình sai: {0} (m0 theo từng lần lặp: {1})`,'r.s0':`-Sai số trung phương trọng số đơn vị: {0}"`,'r.weak':`-Điểm yếu nhất: {0} Mp= {1}m`,
+'r.weaklen':`-Chiều dài cạnh yếu: ({0}) Ms/S = 1/ {1}`,'r.weakaz':`-Phương vị cạnh yếu: ({0}) Ma = {1}"`,
+'b.copy':`Sao chép báo cáo (dán vào Excel/Word)`,'b.print':`In / Lưu PDF`,'b.word':`Xuất Word (.doc)`,
+'o.coord':`Xuất toạ độ (dán vào Excel)`,'o.cpc':`Sao chép toạ độ`,dof:`Bậc tự do: {0}.`,'csv.pt':`Diem`,
+'k.t':`KIỂM TRA KHÉP VÒNG`,'k.loops':`Vòng khép góc`,'k.found':`: phát hiện {0} vòng khép`,'k.none':`: không có vòng khép`,
+'k.loop':`Vòng {0} ({1} đỉnh): {2}<br>{3}`,'k.skip':`Không đủ số liệu góc để kiểm tra vòng này.`,'k.type':`Loại: {0}, sai số khép góc fβ = {1}"`,
+'k.in':`Góc trong`,'k.out':`Góc ngoài`,'k.routes':`Sai số tuyến đường chuyền giữa các điểm gốc`,'k.noroute':`: không có tuyến nào nối giữa các điểm gốc`,
+'k.route':`Tuyến {0} ({1} -&gt; {2}): {3}<br>Tổng chiều dài tuyến: {4} m, SS khép: fx = {5} m, fy = {6} m, fs = {7} m, fs/S = {8}`,
+'k.abort':`Lưới quá dày, việc dò vòng khép đã dừng sớm nên danh sách có thể chưa đầy đủ.`,
+'d.t':`BÌNH SAI LƯỚI ĐỘ CAO`,'d.nroutes':`Số tuyến đo:`,'d.cap':`Cấp hạng lưới:`,'d.init':`SỐ LIỆU KHỞI TÍNH`,
+'d.route':`Tuyến (Route) {0}<br>Tổng chiều dài tuyến: {1} km, SS khép: {2} m (SS khép giới hạn: {3} m)`,
+'d.warn':`>>> CẢNH BÁO: sai số khép vượt giới hạn!`,'d.nochk':`Không có tuyến khép.`,
+'d.shc':`SỐ HIỆU CHỈNH ĐỘ CAO`,'d.rname':`Tên tuyến`,'d.vm':`SHC (m)`,'d.dhb':`Ch.cao bs (m)`,
+'d.after':`ĐỘ CAO SAU BÌNH SAI`,'d.hb':`H trước bs (m)`,'d.ha':`H sau bs (m)`,'d.m':`SSTP (mm)`,
+'d.s0':`-Sai số trung phương trọng số đơn vị: {0} (mm/√km)`,'d.weak':`-Sai số điểm yếu ({0}): {1} (mm)`,
+'d.out':`Xuất độ cao (dán vào Excel)`,'d.cph':`Sao chép độ cao`,
+'e.num':`Số không hợp lệ: {0}`,'e.sing':`Ma trận chuẩn suy biến: lưới thiếu liên kết hoặc thiếu điểm khống chế.`,
+'e.need':`{0} thiếu số liệu: {1}`,'w.ctl':`Điểm gốc`,'w.ang':`Góc đo`,'w.dis':`Cạnh đo`,
+'e.nodata':`Chưa có số liệu đo.`,'e.noang':`Chưa nhập sai số đo góc.`,'e.nodis':`Chưa nhập sai số đo cạnh (a, b).`,'e.noctl':`Chưa có điểm gốc.`,
+'e.nonew':`Không có điểm mới cần bình sai.`,
+'e.nocoord':`Không tự tính được toạ độ gần đúng cho: {0}. Các điểm này chưa nối được tới ít nhất 2 điểm gốc qua góc và cạnh đo; hãy kiểm tra tên điểm.`,
+'e.dof':`Số trị đo ({0}) chưa vượt số ẩn ({1}): cần thêm góc/cạnh đo.`,
+'e.noconv':`Bình sai không hội tụ: kiểm tra lại số liệu (có thể có sai số thô hoặc nhầm tên điểm).`,
+'e.row':`Dòng {1} ({0}): {2}`,'q.t':`DÒ SỐ LIỆU NHẬP NHẦM`,'q.pre':`Kiểm tra số liệu đã nhập`,
+'q.glob':`Kiểm định χ² tổng thể: m0 = {0}" (σ góc đã nhập = {1}"), χ² = {2}, ngưỡng 95% = {3}, bậc tự do = {4}.`,
+'q.gok':`Kết luận: đạt, số liệu phù hợp với độ chính xác đã khai báo.`,
+'q.gbad':`Kết luận: không đạt, trong số liệu có thể có sai số thô (nhập nhầm) hoặc độ chính xác khai báo (a, b, σ góc) chưa phù hợp.`,
+'q.snoop':`Dò sai số thô sau bình sai (kiểm định Baarda)`,
+'q.hint':`w là sai số hiệu chỉnh chuẩn hoá của từng trị đo; trị đo có w lớn nhất là nghi vấn nhất. Một số liệu sai làm các trị đo quanh nó cũng bị lệch, nên hãy sửa dòng đầu bảng trước rồi bình sai lại. "Gợi ý" là giá trị mà trị đo đó nên có nếu nó là chỗ nhập nhầm duy nhất.`,
+'q.ok':`Không có trị đo nào vượt ngưỡng nghi ngờ (|w| &lt; {0}): chưa phát hiện số liệu nhập nhầm.`,
+'q.h.tb':`Bảng`,'q.h.ln':`Dòng`,'q.h.dat':`Số liệu đã nhập`,'q.h.w':`|w|`,'q.h.sug':`Gợi ý`,'q.h.lvl':`Mức`,'q.hi':`Rất nghi ngờ`,'q.mid':`Nghi ngờ`,
+'q.lowr':`Các trị đo sau có hệ số bội r &lt; 0.1 nên gần như không dò được sai số thô (sai số bị hấp thụ vào toạ độ): {0}. Hãy tự kiểm tra lại các dòng này.`,
+'p.ctl.dup':`Điểm gốc {0} khai báo nhiều lần (dòng {1} và dòng {2}).`,
+'p.ang.rng':`Góc đo, dòng {0} [{1}]: độ/phút/giây ngoài phạm vi (độ 0–360, phút và giây từ 0 đến dưới 60).`,
+'p.ang.same':`Góc đo, dòng {0} [{1}]: hai trong ba tên điểm trùng nhau.`,
+'p.dis.nonpos':`Cạnh đo, dòng {0} [{1}]: chiều dài phải lớn hơn 0.`,
+'p.dis.same':`Cạnh đo, dòng {0} [{1}]: điểm đầu và điểm cuối trùng nhau.`,
+'p.dis.dup':`Cạnh đo: dòng {0} [{1}] và dòng {2} [{3}] là cùng một cạnh nhưng chênh nhau {4} m.`,
+'p.ang.dup':`Góc đo: dòng {0} [{1}] và dòng {2} [{3}] là cùng một góc (hoặc góc phụ) nhưng chênh nhau {4}".`,
+'p.cd':`Cạnh đo, dòng {0} [{1}]: hai đầu đều là điểm gốc; chiều dài tính từ toạ độ là {2} m, chênh {3} m so với số đo.`,
+'p.ca':`Góc đo, dòng {0} [{1}]: cả ba điểm đều là điểm gốc; góc tính từ toạ độ là {2}, chênh {3}" so với số đo.`,
+'p.once':`Điểm {0} chỉ xuất hiện 1 lần ({1}, dòng {2}): có thể gõ sai tên điểm.`,
+'p.unused':`Điểm gốc {0} (dòng {1}) không xuất hiện trong số liệu đo: có thể gõ sai tên điểm.`,
+'p.sim':`Tên điểm {0} và {1} gần giống nhau (chỉ khác chữ hoa/thường hoặc O/0, l/I/1): có thể là cùng một điểm bị gõ nhầm.`,
+'e.nomeas':`Chưa có tuyến đo chênh cao.`,'e.ctlname':`Điểm gốc thiếu tên: {0}`,'e.ctldup':`Điểm gốc bị trùng tên: {0}`,'e.ctlh':`Điểm gốc {0} chưa có cao độ!`,
+'e.rname':`Tuyến đo dòng {0} thiếu tên điểm đầu/cuối.`,'e.rmiss':`Tuyến {0} - {1} thiếu chênh cao hoặc chiều dài!`,'e.rlen':`Chiều dài tuyến {0} - {1} phải > 0!`,
+'e.nonewh':`Không có điểm mới để bình sai!`,'e.fewobs':`Số tuyến đo ít hơn số điểm mới!`,'e.unconn':`Điểm {0} không nối được với điểm gốc nào!`,
+'doc.title':`Bình sai`
+},
+en:{
+title:`General Adjustment`,author:`Nguyễn Xuân Khoát - Hanoi University of Mining and Geology`,choose:`Choose the type of adjustment:`,
+'mb.t':`Horizontal network adjustment`,'mb.d':`Traverse and triangulation networks: angles + distances, UTM/Gauss`,
+'dc.t':`Height network adjustment`,'dc.d':`Leveling network: benchmarks + height-difference lines`,
+back:`← Home`,'mb.h1':`Horizontal Network Adjustment`,'dc.h1':`Height Network Adjustment`,
+'sec.data':`Data`,'sec.par':`Parameters`,
+'hint.mb':`Type into cells like Excel (Enter moves down). You can copy a whole range from Excel, click the first cell and paste: the data spreads across the cells.`,
+'hint.dc':`Type into cells like Excel (Enter moves down). You can copy a whole range from Excel, click the first cell and paste. Any point not in the control-point table is treated as a new point.`,
+project:`Project`,pg:`Angle measurement error (")`,ph:`Mean height H (m)`,pj:`Projection`,'pj.n':`No correction`,cc:`Correct angles for the projection`,
+solve:`Adjust`,ex:`Load example`,cl:`Clear all`,hcap:`Network class (I–IV)`,
+'g.ctl':`Control points`,'g.ang':`Measured angles`,'g.dis':`Measured distances`,'g.ht':`Height-difference lines`,
+'h.name':`Point name`,'h.left':`Left`,'h.mid':`Middle`,'h.right':`Right`,'h.deg':`Deg`,'h.min':`Min`,'h.sec':`Sec`,
+'h.from':`From point`,'h.to':`To point`,'h.len':`Side length`,'h.elev':`Elevation (m)`,'h.dh':`Height diff. (m)`,'h.lenkm':`Length (km)`,
+add5:`+ Add 5 rows`,lang:`Language`,
+'r.mb':`HORIZONTAL NETWORK ADJUSTMENT`,'r.params':`Network parameters`,'r.nctl':`Control points:`,'r.ncor':`Correction type:`,'r.nnew':`New points:`,
+'r.aerr':`Angle error:`,'r.nd':`Distances:`,'r.derr':`Distance error:`,'r.na':`Angles:`,'r.az':`Measured azimuths:`,
+'r.ctl':`CONTROL COORDINATES`,'r.dsides':`ADJUSTED DISTANCES`,'r.dangs':`ADJUSTED ANGLES`,'r.rel':`RELATIVE POINT ACCURACY`,'r.adjc':`ADJUSTED COORDINATES`,
+'r.px':`X coordinate`,'r.py':`Y coordinate`,'t.side':`Side`,'t.dist':`Meas. dist.`,'t.ell':`Ellip. corr.`,'t.cc':`Proj. corr.`,'t.v':`Correction v`,'t.adj':`Adjusted side`,
+'t.angb':`Angle before adj.`,'t.ccmp':`Proj. corr. (")`,'t.anga':`Angle after adj.`,'t.azm':`Azimuth`,
+'r.iter':`-Adjustment iterations: {0} (m0 per iteration: {1})`,'r.s0':`-Standard error of unit weight: {0}"`,'r.weak':`-Weakest point: {0} Mp = {1} m`,
+'r.weaklen':`-Weakest side length: ({0}) Ms/S = 1/ {1}`,'r.weakaz':`-Weakest side azimuth: ({0}) Ma = {1}"`,
+'b.copy':`Copy report (paste into Excel/Word)`,'b.print':`Print / Save PDF`,'b.word':`Export Word (.doc)`,
+'o.coord':`Export coordinates (paste into Excel)`,'o.cpc':`Copy coordinates`,dof:`Degrees of freedom: {0}.`,'csv.pt':`Point`,
+'k.t':`CLOSURE CHECK`,'k.loops':`Angle closure loops`,'k.found':`: {0} closed loop(s) found`,'k.none':`: no closed loops`,
+'k.loop':`Loop {0} ({1} vertices): {2}<br>{3}`,'k.skip':`Not enough angle data to check this loop.`,'k.type':`Type: {0}, angular misclosure fβ = {1}"`,
+'k.in':`Interior angles`,'k.out':`Exterior angles`,'k.routes':`Misclosure of traverse lines between control points`,'k.noroute':`: no traverse line connects control points`,
+'k.route':`Line {0} ({1} -&gt; {2}): {3}<br>Total line length: {4} m, misclosure: fx = {5} m, fy = {6} m, fs = {7} m, fs/S = {8}`,
+'k.abort':`The network is too dense; the loop search stopped early, so the list may be incomplete.`,
+'d.t':`HEIGHT NETWORK ADJUSTMENT`,'d.nroutes':`Lines:`,'d.cap':`Network class:`,'d.init':`INITIAL DATA`,
+'d.route':`Line (Route) {0}<br>Total line length: {1} km, misclosure: {2} m (allowed misclosure: {3} m)`,
+'d.warn':`>>> WARNING: misclosure exceeds the allowed limit!`,'d.nochk':`No closing lines.`,
+'d.shc':`HEIGHT CORRECTIONS`,'d.rname':`Line`,'d.vm':`Corr. (m)`,'d.dhb':`Adj. diff. (m)`,
+'d.after':`HEIGHTS AFTER ADJUSTMENT`,'d.hb':`H before adj. (m)`,'d.ha':`H after adj. (m)`,'d.m':`Std. error (mm)`,
+'d.s0':`-Standard error of unit weight: {0} (mm/√km)`,'d.weak':`-Weakest point error ({0}): {1} (mm)`,
+'d.out':`Export heights (paste into Excel)`,'d.cph':`Copy heights`,
+'e.num':`Invalid number: {0}`,'e.sing':`Singular normal matrix: the network lacks connections or control points.`,
+'e.need':`{0}: missing data: {1}`,'w.ctl':`Control point`,'w.ang':`Measured angle`,'w.dis':`Measured distance`,
+'e.nodata':`No measurements entered.`,'e.noang':`Angle measurement error not entered.`,'e.nodis':`Distance measurement error (a, b) not entered.`,'e.noctl':`No control points.`,
+'e.nonew':`There are no new points to adjust.`,
+'e.nocoord':`Cannot compute approximate coordinates for: {0}. These points are not connected to at least 2 control points through angles and distances; please check the point names.`,
+'e.dof':`Number of observations ({0}) does not exceed the number of unknowns ({1}): more angles/distances are needed.`,
+'e.noconv':`The adjustment did not converge: check the data (there may be gross errors or mistyped point names).`,
+'e.row':`Row {1} ({0}): {2}`,'q.t':`CHECK FOR MISTYPED DATA`,'q.pre':`Input data check`,
+'q.glob':`Global χ² test: m0 = {0}" (entered angle σ = {1}"), χ² = {2}, 95% limit = {3}, degrees of freedom = {4}.`,
+'q.gok':`Result: passed, the data agree with the declared accuracy.`,
+'q.gbad':`Result: failed, the data may contain gross errors (mistyped values) or the declared accuracy (a, b, angle σ) may be unrealistic.`,
+'q.snoop':`Gross-error detection after adjustment (Baarda data snooping)`,
+'q.hint':`w is the standardized residual of each observation; the largest w is the most suspicious. One bad value also distorts the observations around it, so fix the first row in the table and adjust again. "Suggested" is the value that observation should have if it is the only mistyped one.`,
+'q.ok':`No observation exceeds the suspicion limit (|w| &lt; {0}): no mistyped data detected.`,
+'q.h.tb':`Table`,'q.h.ln':`Row`,'q.h.dat':`Entered data`,'q.h.w':`|w|`,'q.h.sug':`Suggested`,'q.h.lvl':`Level`,'q.hi':`Very suspicious`,'q.mid':`Suspicious`,
+'q.lowr':`These observations have redundancy r &lt; 0.1, so gross errors in them can hardly be detected (they are absorbed into the coordinates): {0}. Please recheck these rows yourself.`,
+'p.ctl.dup':`Control point {0} is declared more than once (rows {1} and {2}).`,
+'p.ang.rng':`Measured angle, row {0} [{1}]: degrees/minutes/seconds out of range (degrees 0–360, minutes and seconds from 0 to below 60).`,
+'p.ang.same':`Measured angle, row {0} [{1}]: two of the three point names are identical.`,
+'p.dis.nonpos':`Measured distance, row {0} [{1}]: the length must be greater than 0.`,
+'p.dis.same':`Measured distance, row {0} [{1}]: the start and end points are identical.`,
+'p.dis.dup':`Measured distance: row {0} [{1}] and row {2} [{3}] are the same side but differ by {4} m.`,
+'p.ang.dup':`Measured angle: row {0} [{1}] and row {2} [{3}] are the same angle (or its complement) but differ by {4}".`,
+'p.cd':`Measured distance, row {0} [{1}]: both ends are control points; the length computed from the coordinates is {2} m, which differs from the measurement by {3} m.`,
+'p.ca':`Measured angle, row {0} [{1}]: all three points are control points; the angle computed from the coordinates is {2}, which differs from the measurement by {3}".`,
+'p.once':`Point {0} appears only once ({1}, row {2}): the point name may be mistyped.`,
+'p.unused':`Control point {0} (row {1}) does not appear in the observations: the point name may be mistyped.`,
+'p.sim':`Point names {0} and {1} are very similar (differ only by letter case or O/0, l/I/1): they may be the same point mistyped.`,
+'e.nomeas':`No height-difference lines entered.`,'e.ctlname':`Control point without a name: {0}`,'e.ctldup':`Duplicate control point name: {0}`,'e.ctlh':`Control point {0} has no elevation!`,
+'e.rname':`Line in row {0} is missing the start/end point name.`,'e.rmiss':`Line {0} - {1} is missing the height difference or length!`,'e.rlen':`Length of line {0} - {1} must be > 0!`,
+'e.nonewh':`There are no new points to adjust!`,'e.fewobs':`There are fewer lines than new points!`,'e.unconn':`Point {0} is not connected to any control point!`,
+'doc.title':`Adjustment`
+},
+zh:{
+title:`综合平差`,author:`Nguyễn Xuân Khoát - 河内矿业地质大学`,choose:`请选择平差类型：`,
+'mb.t':`平面控制网平差`,'mb.d':`导线网、三角网：角度 + 边长，UTM/高斯`,
+'dc.t':`高程控制网平差`,'dc.d':`水准网：已知点 + 高差路线`,
+back:`← 首页`,'mb.h1':`平面控制网平差`,'dc.h1':`高程控制网平差`,
+'sec.data':`数据`,'sec.par':`参数`,
+'hint.mb':`像 Excel 一样逐格输入（回车跳到下一行）。可从 Excel 复制整个区域，点击第一个单元格后粘贴：数据会自动填入各单元格。`,
+'hint.dc':`像 Excel 一样逐格输入（回车跳到下一行）。可从 Excel 复制整个区域，点击第一个单元格后粘贴。不在已知点表中的点将被视为新点。`,
+project:`工程名称`,pg:`测角中误差 (")`,ph:`平均高程 H (m)`,pj:`投影方式`,'pj.n':`不改正`,cc:`按投影对角度进行改正`,
+solve:`平差`,ex:`载入示例`,cl:`全部清除`,hcap:`网等级 (I–IV)`,
+'g.ctl':`已知点`,'g.ang':`输入观测角`,'g.dis':`输入观测边长`,'g.ht':`高差观测路线`,
+'h.name':`点名`,'h.left':`左`,'h.mid':`中`,'h.right':`右`,'h.deg':`度`,'h.min':`分`,'h.sec':`秒`,
+'h.from':`起点`,'h.to':`终点`,'h.len':`边长`,'h.elev':`高程 (m)`,'h.dh':`高差 (m)`,'h.lenkm':`长度 (km)`,
+add5:`+ 增加 5 行`,lang:`语言`,
+'r.mb':`平面控制网平差`,'r.params':`网参数`,'r.nctl':`已知点数：`,'r.ncor':`改正方式：`,'r.nnew':`新点数：`,
+'r.aerr':`测角中误差：`,'r.nd':`观测边数：`,'r.derr':`测边中误差：`,'r.na':`观测角数：`,'r.az':`观测方位角数：`,
+'r.ctl':`已知点坐标`,'r.dsides':`平差后边长`,'r.dangs':`平差后角度`,'r.rel':`点位相对精度表`,'r.adjc':`平差后坐标`,
+'r.px':`X 坐标`,'r.py':`Y 坐标`,'t.side':`边名`,'t.dist':`观测距离`,'t.ell':`椭球改正`,'t.cc':`投影改正`,'t.v':`改正数 v`,'t.adj':`平差后边长`,
+'t.angb':`平差前角度`,'t.ccmp':`投影改正 (")`,'t.anga':`平差后角度`,'t.azm':`方位角`,
+'r.iter':`-平差迭代次数：{0}（各次迭代的单位权中误差 m0：{1}）`,'r.s0':`-单位权中误差：{0}"`,'r.weak':`-最弱点：{0}  Mp = {1} m`,
+'r.weaklen':`-最弱边长：({0})  Ms/S = 1/ {1}`,'r.weakaz':`-最弱边方位角：({0})  Ma = {1}"`,
+'b.copy':`复制报告（粘贴到 Excel/Word）`,'b.print':`打印 / 保存 PDF`,'b.word':`导出 Word (.doc)`,
+'o.coord':`导出坐标（粘贴到 Excel）`,'o.cpc':`复制坐标`,dof:`多余观测数：{0}。`,'csv.pt':`点名`,
+'k.t':`闭合差检查`,'k.loops':`角度闭合环`,'k.found':`：发现 {0} 个闭合环`,'k.none':`：没有闭合环`,
+'k.loop':`环 {0}（{1} 个顶点）：{2}<br>{3}`,'k.skip':`角度数据不足，无法检查该环。`,'k.type':`类型：{0}，角度闭合差 fβ = {1}"`,
+'k.in':`内角`,'k.out':`外角`,'k.routes':`已知点之间导线路线的闭合差`,'k.noroute':`：没有连接已知点的导线路线`,
+'k.route':`路线 {0}（{1} -&gt; {2}）：{3}<br>路线总长：{4} m，闭合差：fx = {5} m，fy = {6} m，fs = {7} m，fs/S = {8}`,
+'k.abort':`网过密，闭合环搜索已提前停止，列表可能不完整。`,
+'d.t':`高程控制网平差`,'d.nroutes':`观测路线数：`,'d.cap':`网等级：`,'d.init':`起算数据`,
+'d.route':`路线 (Route) {0}<br>路线总长：{1} km，闭合差：{2} m（限差：{3} m）`,
+'d.warn':`>>> 警告：闭合差超过限差！`,'d.nochk':`没有闭合路线。`,
+'d.shc':`高程改正数`,'d.rname':`路线名`,'d.vm':`改正数 (m)`,'d.dhb':`平差后高差 (m)`,
+'d.after':`平差后高程`,'d.hb':`平差前 H (m)`,'d.ha':`平差后 H (m)`,'d.m':`中误差 (mm)`,
+'d.s0':`-单位权中误差：{0} (mm/√km)`,'d.weak':`-最弱点中误差 ({0})：{1} (mm)`,
+'d.out':`导出高程（粘贴到 Excel）`,'d.cph':`复制高程`,
+'e.num':`无效数字：{0}`,'e.sing':`法方程矩阵奇异：网缺少连接或缺少控制点。`,
+'e.need':`{0}缺少数据：{1}`,'w.ctl':`已知点`,'w.ang':`观测角`,'w.dis':`观测边`,
+'e.nodata':`尚无观测数据。`,'e.noang':`尚未输入测角中误差。`,'e.nodis':`尚未输入测边中误差 (a, b)。`,'e.noctl':`尚无已知点。`,
+'e.nonew':`没有需要平差的新点。`,
+'e.nocoord':`无法计算以下点的近似坐标：{0}。这些点未通过角度和边长连接到至少 2 个已知点，请检查点名。`,
+'e.dof':`观测值个数 ({0}) 未超过未知数个数 ({1})：需要增加角度/边长观测。`,
+'e.noconv':`平差不收敛：请检查数据（可能存在粗差或点名输错）。`,
+'e.row':`第 {1} 行（{0}）：{2}`,'q.t':`录入错误检查`,'q.pre':`录入数据检查`,
+'q.glob':`整体 χ² 检验：m0 = {0}"（输入的测角中误差 σ = {1}"），χ² = {2}，95% 限值 = {3}，自由度 = {4}。`,
+'q.gok':`结论：通过，数据与所设精度相符。`,
+'q.gbad':`结论：未通过，数据中可能存在粗差（录入错误），或所设精度（a、b、测角 σ）不合适。`,
+'q.snoop':`平差后的粗差探测（Baarda 数据探测法）`,
+'q.hint':`w 是各观测值的标准化改正数，w 最大者最可疑。一个错误数据会使其周围的观测值也出现偏差，请先修改表中第一行再重新平差。“建议值”是该观测值在其为唯一录入错误时应有的数值。`,
+'q.ok':`没有观测值超过可疑限值（|w| &lt; {0}）：未发现录入错误。`,
+'q.h.tb':`表`,'q.h.ln':`行`,'q.h.dat':`已录入数据`,'q.h.w':`|w|`,'q.h.sug':`建议值`,'q.h.lvl':`等级`,'q.hi':`高度可疑`,'q.mid':`可疑`,
+'q.lowr':`以下观测值的多余观测分量 r &lt; 0.1，几乎无法探测其中的粗差（误差被吸收到坐标中）：{0}。请自行复核这些行。`,
+'p.ctl.dup':`已知点 {0} 被重复定义（第 {1} 行和第 {2} 行）。`,
+'p.ang.rng':`观测角，第 {0} 行 [{1}]：度/分/秒超出范围（度 0–360，分和秒 0 至小于 60）。`,
+'p.ang.same':`观测角，第 {0} 行 [{1}]：三个点名中有两个相同。`,
+'p.dis.nonpos':`观测边，第 {0} 行 [{1}]：长度必须大于 0。`,
+'p.dis.same':`观测边，第 {0} 行 [{1}]：起点和终点相同。`,
+'p.dis.dup':`观测边：第 {0} 行 [{1}] 与第 {2} 行 [{3}] 是同一条边，但相差 {4} m。`,
+'p.ang.dup':`观测角：第 {0} 行 [{1}] 与第 {2} 行 [{3}] 是同一个角（或其补角），但相差 {4}"。`,
+'p.cd':`观测边，第 {0} 行 [{1}]：两端均为已知点；由坐标算得的长度为 {2} m，与观测值相差 {3} m。`,
+'p.ca':`观测角，第 {0} 行 [{1}]：三个点均为已知点；由坐标算得的角度为 {2}，与观测值相差 {3}"。`,
+'p.once':`点 {0} 只出现 1 次（{1}，第 {2} 行）：点名可能输错。`,
+'p.unused':`已知点 {0}（第 {1} 行）未出现在观测数据中：点名可能输错。`,
+'p.sim':`点名 {0} 与 {1} 非常相似（仅大小写或 O/0、l/I/1 不同）：可能是同一个点被输错。`,
+'e.nomeas':`尚无高差观测路线。`,'e.ctlname':`已知点缺少点名：{0}`,'e.ctldup':`已知点点名重复：{0}`,'e.ctlh':`已知点 {0} 没有高程！`,
+'e.rname':`第 {0} 行的路线缺少起点/终点名。`,'e.rmiss':`路线 {0} - {1} 缺少高差或长度！`,'e.rlen':`路线 {0} - {1} 的长度必须 > 0！`,
+'e.nonewh':`没有需要平差的新点！`,'e.fewobs':`观测路线数少于新点数！`,'e.unconn':`点 {0} 未与任何已知点连通！`,
+'doc.title':`平差`
+},
+ja:{
+title:`総合平均計算`,author:`Nguyễn Xuân Khoát - ハノイ鉱山地質大学`,choose:`平均計算の種類を選択:`,
+'mb.t':`平面基準点網の平均計算`,'mb.d':`多角網・三角網：角 + 距離、UTM/ガウス`,
+'dc.t':`水準網の平均計算`,'dc.d':`水準網：既知点 + 比高路線`,
+back:`← ホーム`,'mb.h1':`平面基準点網の平均計算`,'dc.h1':`水準網の平均計算`,
+'sec.data':`データ`,'sec.par':`パラメータ`,
+'hint.mb':`Excel のようにセルごとに入力します（Enter で次の行へ）。Excel から範囲をコピーし、最初のセルをクリックして貼り付けると、データが各セルに展開されます。`,
+'hint.dc':`Excel のようにセルごとに入力します（Enter で次の行へ）。Excel から範囲をコピーし、最初のセルをクリックして貼り付けられます。既知点の表にない点は新点として扱われます。`,
+project:`工事名`,pg:`測角誤差 (")`,ph:`平均標高 H (m)`,pj:`投影法`,'pj.n':`補正なし`,cc:`投影法による角の補正`,
+solve:`平均計算`,ex:`例を読み込む`,cl:`すべて消去`,hcap:`網の等級 (I–IV)`,
+'g.ctl':`既知点`,'g.ang':`観測角の入力`,'g.dis':`観測距離の入力`,'g.ht':`比高観測路線`,
+'h.name':`点名`,'h.left':`左`,'h.mid':`中央`,'h.right':`右`,'h.deg':`度`,'h.min':`分`,'h.sec':`秒`,
+'h.from':`起点`,'h.to':`終点`,'h.len':`辺長`,'h.elev':`標高 (m)`,'h.dh':`比高 (m)`,'h.lenkm':`距離 (km)`,
+add5:`+ 5 行追加`,lang:`言語`,
+'r.mb':`平面基準点網の平均計算`,'r.params':`網の諸元`,'r.nctl':`既知点数：`,'r.ncor':`補正の種類：`,'r.nnew':`新点数：`,
+'r.aerr':`測角誤差：`,'r.nd':`観測距離数：`,'r.derr':`測距誤差：`,'r.na':`観測角数：`,'r.az':`観測方位角数：`,
+'r.ctl':`既知点座標`,'r.dsides':`平均後の距離`,'r.dangs':`平均後の角`,'r.rel':`点間相対精度表`,'r.adjc':`平均後座標`,
+'r.px':`X 座標`,'r.py':`Y 座標`,'t.side':`辺名`,'t.dist':`測定距離`,'t.ell':`楕円体補正`,'t.cc':`投影補正`,'t.v':`改正数 v`,'t.adj':`平均後の辺長`,
+'t.angb':`平均前の角`,'t.ccmp':`投影補正 (")`,'t.anga':`平均後の角`,'t.azm':`方位角`,
+'r.iter':`-平均計算の反復回数：{0}（各反復の単位重み標準偏差 m0：{1}）`,'r.s0':`-単位重みの標準偏差：{0}"`,'r.weak':`-最弱点：{0}  Mp = {1} m`,
+'r.weaklen':`-最弱辺長：({0})  Ms/S = 1/ {1}`,'r.weakaz':`-最弱辺の方位角：({0})  Ma = {1}"`,
+'b.copy':`レポートをコピー（Excel/Word に貼り付け）`,'b.print':`印刷 / PDF 保存`,'b.word':`Word (.doc) に出力`,
+'o.coord':`座標を出力（Excel に貼り付け）`,'o.cpc':`座標をコピー`,dof:`自由度：{0}。`,'csv.pt':`点名`,
+'k.t':`閉合差の検査`,'k.loops':`角の閉合環`,'k.found':`：閉合環が {0} 個見つかりました`,'k.none':`：閉合環はありません`,
+'k.loop':`環 {0}（頂点 {1} 個）：{2}<br>{3}`,'k.skip':`この環を検査するための角データが不足しています。`,'k.type':`種類：{0}、角閉合差 fβ = {1}"`,
+'k.in':`内角`,'k.out':`外角`,'k.routes':`既知点間の多角路線の閉合差`,'k.noroute':`：既知点間を結ぶ路線はありません`,
+'k.route':`路線 {0}（{1} -&gt; {2}）：{3}<br>路線の総延長：{4} m、閉合差：fx = {5} m、fy = {6} m、fs = {7} m、fs/S = {8}`,
+'k.abort':`網が密すぎるため、閉合環の探索を途中で打ち切りました。一覧は不完全な可能性があります。`,
+'d.t':`水準網の平均計算`,'d.nroutes':`観測路線数：`,'d.cap':`網の等級：`,'d.init':`初期データ`,
+'d.route':`路線 (Route) {0}<br>路線の総延長：{1} km、閉合差：{2} m（許容閉合差：{3} m）`,
+'d.warn':`>>> 警告：閉合差が許容値を超えています！`,'d.nochk':`閉合路線はありません。`,
+'d.shc':`標高の改正数`,'d.rname':`路線名`,'d.vm':`改正数 (m)`,'d.dhb':`平均後の比高 (m)`,
+'d.after':`平均後の標高`,'d.hb':`平均前 H (m)`,'d.ha':`平均後 H (m)`,'d.m':`標準偏差 (mm)`,
+'d.s0':`-単位重みの標準偏差：{0} (mm/√km)`,'d.weak':`-最弱点の標準偏差 ({0})：{1} (mm)`,
+'d.out':`標高を出力（Excel に貼り付け）`,'d.cph':`標高をコピー`,
+'e.num':`無効な数値：{0}`,'e.sing':`正規方程式の行列が特異です：網の接続または既知点が不足しています。`,
+'e.need':`{0}のデータが不足しています：{1}`,'w.ctl':`既知点`,'w.ang':`観測角`,'w.dis':`観測距離`,
+'e.nodata':`観測データがありません。`,'e.noang':`測角誤差が入力されていません。`,'e.nodis':`測距誤差 (a, b) が入力されていません。`,'e.noctl':`既知点がありません。`,
+'e.nonew':`平均計算する新点がありません。`,
+'e.nocoord':`次の点の近似座標を計算できません：{0}。これらの点は、角と距離を通じて 2 つ以上の既知点に接続されていません。点名を確認してください。`,
+'e.dof':`観測数 ({0}) が未知数 ({1}) を上回っていません：角・距離の観測を追加してください。`,
+'e.noconv':`平均計算が収束しませんでした：データを確認してください（粗大誤差または点名の誤りの可能性があります）。`,
+'e.row':`{1} 行目（{0}）：{2}`,'q.t':`入力ミスの検出`,'q.pre':`入力データの検査`,
+'q.glob':`全体 χ² 検定：m0 = {0}"（入力した角の σ = {1}"）、χ² = {2}、95% 限界値 = {3}、自由度 = {4}。`,
+'q.gok':`結果：合格。データは設定した精度と整合しています。`,
+'q.gbad':`結果：不合格。データに粗大誤差（入力ミス）が含まれているか、設定した精度（a, b, 角の σ）が実態に合っていない可能性があります。`,
+'q.snoop':`平均計算後の粗大誤差検出（Baarda のデータスヌーピング）`,
+'q.hint':`w は各観測値の標準化残差で、w が最大のものが最も疑わしい観測値です。誤った値が 1 つあると周囲の観測値にも歪みが出るため、表の先頭の行を修正してから再度平均計算してください。「推定値」は、その観測値が唯一の入力ミスである場合に本来あるべき値です。`,
+'q.ok':`疑いの限界を超える観測値はありません（|w| &lt; {0}）：入力ミスは検出されませんでした。`,
+'q.h.tb':`表`,'q.h.ln':`行`,'q.h.dat':`入力データ`,'q.h.w':`|w|`,'q.h.sug':`推定値`,'q.h.lvl':`レベル`,'q.hi':`非常に疑わしい`,'q.mid':`疑わしい`,
+'q.lowr':`次の観測値は多重度 r &lt; 0.1 のため、粗大誤差をほとんど検出できません（誤差が座標に吸収されます）：{0}。これらの行は自分で再確認してください。`,
+'p.ctl.dup':`既知点 {0} が重複して定義されています（{1} 行目と {2} 行目）。`,
+'p.ang.rng':`観測角、{0} 行目 [{1}]：度・分・秒が範囲外です（度は 0〜360、分と秒は 0 以上 60 未満）。`,
+'p.ang.same':`観測角、{0} 行目 [{1}]：3 つの点名のうち 2 つが同じです。`,
+'p.dis.nonpos':`観測距離、{0} 行目 [{1}]：長さは 0 より大きくなければなりません。`,
+'p.dis.same':`観測距離、{0} 行目 [{1}]：始点と終点が同じです。`,
+'p.dis.dup':`観測距離：{0} 行目 [{1}] と {2} 行目 [{3}] は同じ辺ですが {4} m 異なります。`,
+'p.ang.dup':`観測角：{0} 行目 [{1}] と {2} 行目 [{3}] は同じ角（またはその補角）ですが {4}" 異なります。`,
+'p.cd':`観測距離、{0} 行目 [{1}]：両端とも既知点です。座標から求めた長さは {2} m で、観測値と {3} m 異なります。`,
+'p.ca':`観測角、{0} 行目 [{1}]：3 点とも既知点です。座標から求めた角は {2} で、観測値と {3}" 異なります。`,
+'p.once':`点 {0} は 1 回しか現れません（{1}、{2} 行目）：点名の入力ミスの可能性があります。`,
+'p.unused':`既知点 {0}（{1} 行目）が観測データに現れません：点名の入力ミスの可能性があります。`,
+'p.sim':`点名 {0} と {1} はよく似ています（大文字小文字、または O/0、l/I/1 の違いのみ）：同じ点を打ち間違えた可能性があります。`,
+'e.nomeas':`比高観測路線がありません。`,'e.ctlname':`名前のない既知点があります：{0}`,'e.ctldup':`既知点名が重複しています：{0}`,'e.ctlh':`既知点 {0} に標高がありません！`,
+'e.rname':`{0} 行目の路線に起点/終点名がありません。`,'e.rmiss':`路線 {0} - {1} に比高または距離がありません！`,'e.rlen':`路線 {0} - {1} の距離は 0 より大きくなければなりません！`,
+'e.nonewh':`平均計算する新点がありません！`,'e.fewobs':`路線数が新点数より少ないです！`,'e.unconn':`点 {0} はどの既知点にも接続されていません！`,
+'doc.title':`平均計算`
+},
+ko:{
+title:`종합 평균 계산`,author:`Nguyễn Xuân Khoát - 하노이 광산지질대학교`,choose:`평균 계산 유형을 선택하세요:`,
+'mb.t':`평면 기준점망 평균 계산`,'mb.d':`다각망·삼각망: 각 + 거리, UTM/가우스`,
+'dc.t':`수준망 평균 계산`,'dc.d':`수준망: 기지점 + 고저차 노선`,
+back:`← 홈`,'mb.h1':`평면 기준점망 평균 계산`,'dc.h1':`수준망 평균 계산`,
+'sec.data':`데이터`,'sec.par':`매개변수`,
+'hint.mb':`Excel처럼 셀마다 입력하세요(Enter로 다음 줄 이동). Excel에서 영역을 복사해 첫 번째 셀을 클릭한 뒤 붙여넣으면 데이터가 각 셀에 자동으로 채워집니다.`,
+'hint.dc':`Excel처럼 셀마다 입력하세요(Enter로 다음 줄 이동). Excel에서 영역을 복사해 첫 번째 셀을 클릭한 뒤 붙여넣을 수 있습니다. 기지점 표에 없는 점은 신점으로 처리됩니다.`,
+project:`공사명`,pg:`각 관측 오차 (")`,ph:`평균 표고 H (m)`,pj:`투영법`,'pj.n':`보정 안 함`,cc:`투영법에 따른 각 보정`,
+solve:`평균 계산`,ex:`예제 불러오기`,cl:`모두 지우기`,hcap:`망 등급 (I–IV)`,
+'g.ctl':`기지점`,'g.ang':`관측각 입력`,'g.dis':`관측 거리 입력`,'g.ht':`고저차 관측 노선`,
+'h.name':`점 이름`,'h.left':`좌`,'h.mid':`중간`,'h.right':`우`,'h.deg':`도`,'h.min':`분`,'h.sec':`초`,
+'h.from':`시점`,'h.to':`종점`,'h.len':`변 길이`,'h.elev':`표고 (m)`,'h.dh':`고저차 (m)`,'h.lenkm':`길이 (km)`,
+add5:`+ 5줄 추가`,lang:`언어`,
+'r.mb':`평면 기준점망 평균 계산`,'r.params':`망 제원`,'r.nctl':`기지점 수:`,'r.ncor':`보정 방식:`,'r.nnew':`신점 수:`,
+'r.aerr':`각 관측 오차:`,'r.nd':`관측 거리 수:`,'r.derr':`거리 관측 오차:`,'r.na':`관측각 수:`,'r.az':`관측 방위각 수:`,
+'r.ctl':`기지점 좌표`,'r.dsides':`평균 후 거리`,'r.dangs':`평균 후 각`,'r.rel':`점 상호 위치 정밀도 표`,'r.adjc':`평균 후 좌표`,
+'r.px':`X 좌표`,'r.py':`Y 좌표`,'t.side':`변 이름`,'t.dist':`측정 거리`,'t.ell':`타원체 보정`,'t.cc':`투영 보정`,'t.v':`보정수 v`,'t.adj':`평균 후 변 길이`,
+'t.angb':`평균 전 각`,'t.ccmp':`투영 보정 (")`,'t.anga':`평균 후 각`,'t.azm':`방위각`,
+'r.iter':`-평균 계산 반복 횟수: {0} (반복별 단위 중량 표준오차 m0: {1})`,'r.s0':`-단위 중량 표준오차: {0}"`,'r.weak':`-최약점: {0}  Mp = {1} m`,
+'r.weaklen':`-최약 변 길이: ({0})  Ms/S = 1/ {1}`,'r.weakaz':`-최약 변 방위각: ({0})  Ma = {1}"`,
+'b.copy':`보고서 복사 (Excel/Word에 붙여넣기)`,'b.print':`인쇄 / PDF 저장`,'b.word':`Word (.doc) 내보내기`,
+'o.coord':`좌표 내보내기 (Excel에 붙여넣기)`,'o.cpc':`좌표 복사`,dof:`자유도: {0}.`,'csv.pt':`점`,
+'k.t':`폐합차 검사`,'k.loops':`각 폐합 고리`,'k.found':`: 폐합 고리 {0}개 발견`,'k.none':`: 폐합 고리 없음`,
+'k.loop':`고리 {0} (꼭짓점 {1}개): {2}<br>{3}`,'k.skip':`이 고리를 검사하기에 각 데이터가 부족합니다.`,'k.type':`종류: {0}, 각 폐합차 fβ = {1}"`,
+'k.in':`내각`,'k.out':`외각`,'k.routes':`기지점 사이 다각 노선의 폐합차`,'k.noroute':`: 기지점을 잇는 노선 없음`,
+'k.route':`노선 {0} ({1} -&gt; {2}): {3}<br>노선 총 길이: {4} m, 폐합차: fx = {5} m, fy = {6} m, fs = {7} m, fs/S = {8}`,
+'k.abort':`망이 너무 조밀하여 폐합 고리 탐색이 일찍 중단되었습니다. 목록이 불완전할 수 있습니다.`,
+'d.t':`수준망 평균 계산`,'d.nroutes':`관측 노선 수:`,'d.cap':`망 등급:`,'d.init':`초기 데이터`,
+'d.route':`노선 (Route) {0}<br>노선 총 길이: {1} km, 폐합차: {2} m (허용 폐합차: {3} m)`,
+'d.warn':`>>> 경고: 폐합차가 허용 한계를 초과했습니다!`,'d.nochk':`폐합 노선이 없습니다.`,
+'d.shc':`표고 보정수`,'d.rname':`노선명`,'d.vm':`보정수 (m)`,'d.dhb':`평균 후 고저차 (m)`,
+'d.after':`평균 후 표고`,'d.hb':`평균 전 H (m)`,'d.ha':`평균 후 H (m)`,'d.m':`표준오차 (mm)`,
+'d.s0':`-단위 중량 표준오차: {0} (mm/√km)`,'d.weak':`-최약점 표준오차 ({0}): {1} (mm)`,
+'d.out':`표고 내보내기 (Excel에 붙여넣기)`,'d.cph':`표고 복사`,
+'e.num':`올바르지 않은 숫자: {0}`,'e.sing':`법방정식 행렬이 특이합니다: 망에 연결 또는 기준점이 부족합니다.`,
+'e.need':`{0} 데이터 누락: {1}`,'w.ctl':`기지점`,'w.ang':`관측각`,'w.dis':`관측 거리`,
+'e.nodata':`관측 데이터가 없습니다.`,'e.noang':`각 관측 오차가 입력되지 않았습니다.`,'e.nodis':`거리 관측 오차 (a, b)가 입력되지 않았습니다.`,'e.noctl':`기지점이 없습니다.`,
+'e.nonew':`평균 계산할 신점이 없습니다.`,
+'e.nocoord':`다음 점의 근사 좌표를 계산할 수 없습니다: {0}. 이 점들은 각과 거리를 통해 기지점 2개 이상에 연결되어 있지 않습니다. 점 이름을 확인하세요.`,
+'e.dof':`관측값 수 ({0})가 미지수 ({1})를 넘지 않습니다: 각/거리 관측이 더 필요합니다.`,
+'e.noconv':`평균 계산이 수렴하지 않았습니다: 데이터를 확인하세요(조대 오차 또는 점 이름 오타일 수 있습니다).`,
+'e.row':`{1}행 ({0}): {2}`,'q.t':`입력 오류 검사`,'q.pre':`입력 데이터 검사`,
+'q.glob':`전체 χ² 검정: m0 = {0}" (입력한 각 σ = {1}"), χ² = {2}, 95% 한계값 = {3}, 자유도 = {4}.`,
+'q.gok':`결과: 통과. 데이터가 설정한 정밀도와 일치합니다.`,
+'q.gbad':`결과: 불통과. 데이터에 조대 오차(입력 오류)가 있거나 설정한 정밀도(a, b, 각 σ)가 맞지 않을 수 있습니다.`,
+'q.snoop':`평균 계산 후 조대 오차 탐지 (Baarda 데이터 스누핑)`,
+'q.hint':`w는 각 관측값의 표준화 잔차이며 w가 가장 큰 관측값이 가장 의심스럽습니다. 틀린 값 하나가 주변 관측값도 왜곡하므로 표의 첫 번째 행을 먼저 수정한 뒤 다시 평균 계산하세요. "제안값"은 그 관측값이 유일한 입력 오류일 때 가져야 할 값입니다.`,
+'q.ok':`의심 한계를 넘는 관측값이 없습니다(|w| &lt; {0}): 입력 오류가 발견되지 않았습니다.`,
+'q.h.tb':`표`,'q.h.ln':`행`,'q.h.dat':`입력한 데이터`,'q.h.w':`|w|`,'q.h.sug':`제안값`,'q.h.lvl':`수준`,'q.hi':`매우 의심`,'q.mid':`의심`,
+'q.lowr':`다음 관측값은 여유도 r &lt; 0.1이므로 조대 오차를 거의 탐지할 수 없습니다(오차가 좌표에 흡수됨): {0}. 이 행들은 직접 다시 확인하세요.`,
+'p.ctl.dup':`기지점 {0}이(가) 중복 정의되었습니다({1}행과 {2}행).`,
+'p.ang.rng':`관측각, {0}행 [{1}]: 도/분/초가 범위를 벗어났습니다(도 0–360, 분과 초는 0 이상 60 미만).`,
+'p.ang.same':`관측각, {0}행 [{1}]: 세 점 이름 중 두 개가 같습니다.`,
+'p.dis.nonpos':`관측 거리, {0}행 [{1}]: 길이는 0보다 커야 합니다.`,
+'p.dis.same':`관측 거리, {0}행 [{1}]: 시점과 종점이 같습니다.`,
+'p.dis.dup':`관측 거리: {0}행 [{1}]과(와) {2}행 [{3}]은(는) 같은 변이지만 {4} m 차이가 납니다.`,
+'p.ang.dup':`관측각: {0}행 [{1}]과(와) {2}행 [{3}]은(는) 같은 각(또는 그 보각)이지만 {4}" 차이가 납니다.`,
+'p.cd':`관측 거리, {0}행 [{1}]: 양 끝이 모두 기지점입니다. 좌표로 계산한 길이는 {2} m이며 관측값과 {3} m 차이가 납니다.`,
+'p.ca':`관측각, {0}행 [{1}]: 세 점이 모두 기지점입니다. 좌표로 계산한 각은 {2}이며 관측값과 {3}" 차이가 납니다.`,
+'p.once':`점 {0}은(는) 한 번만 나타납니다({1}, {2}행): 점 이름을 잘못 입력했을 수 있습니다.`,
+'p.unused':`기지점 {0}({1}행)이(가) 관측 데이터에 나타나지 않습니다: 점 이름을 잘못 입력했을 수 있습니다.`,
+'p.sim':`점 이름 {0}과(와) {1}이(가) 매우 비슷합니다(대소문자 또는 O/0, l/I/1만 다름): 같은 점을 잘못 입력했을 수 있습니다.`,
+'e.nomeas':`고저차 관측 노선이 없습니다.`,'e.ctlname':`이름 없는 기지점: {0}`,'e.ctldup':`기지점 이름 중복: {0}`,'e.ctlh':`기지점 {0}에 표고가 없습니다!`,
+'e.rname':`{0}번째 줄 노선에 시점/종점 이름이 없습니다.`,'e.rmiss':`노선 {0} - {1}에 고저차 또는 길이가 없습니다!`,'e.rlen':`노선 {0} - {1}의 길이는 0보다 커야 합니다!`,
+'e.nonewh':`평균 계산할 신점이 없습니다!`,'e.fewobs':`노선 수가 신점 수보다 적습니다!`,'e.unconn':`점 {0}이(가) 어떤 기지점과도 연결되지 않았습니다!`,
+'doc.title':`평균 계산`
+},
+fr:{
+title:`Compensation générale`,author:`Nguyễn Xuân Khoát - Université des Mines et de Géologie de Hanoï`,choose:`Choisissez le type de compensation :`,
+'mb.t':`Compensation planimétrique`,'mb.d':`Réseaux de cheminement et de triangulation : angles + distances, UTM/Gauss`,
+'dc.t':`Compensation altimétrique`,'dc.d':`Réseau de nivellement : points d'appui + cheminements de dénivelée`,
+back:`← Accueil`,'mb.h1':`Compensation d'un réseau planimétrique`,'dc.h1':`Compensation d'un réseau altimétrique`,
+'sec.data':`Données`,'sec.par':`Paramètres`,
+'hint.mb':`Saisissez cellule par cellule comme dans Excel (Entrée passe à la ligne suivante). Vous pouvez copier une plage depuis Excel, cliquer sur la première cellule et coller : les données se répartissent dans les cellules.`,
+'hint.dc':`Saisissez cellule par cellule comme dans Excel (Entrée passe à la ligne suivante). Vous pouvez copier une plage depuis Excel, cliquer sur la première cellule et coller. Tout point absent du tableau des points d'appui est considéré comme un point nouveau.`,
+project:`Projet`,pg:`Erreur de mesure d'angle (")`,ph:`Altitude moyenne H (m)`,pj:`Projection`,'pj.n':`Sans correction`,cc:`Corriger les angles selon la projection`,
+solve:`Compenser`,ex:`Charger un exemple`,cl:`Tout effacer`,hcap:`Classe du réseau (I–IV)`,
+'g.ctl':`Points d'appui`,'g.ang':`Saisie des angles`,'g.dis':`Saisie des distances`,'g.ht':`Cheminements de dénivelée`,
+'h.name':`Nom du point`,'h.left':`Gauche`,'h.mid':`Centre`,'h.right':`Droite`,'h.deg':`Deg`,'h.min':`Min`,'h.sec':`Sec`,
+'h.from':`Point de départ`,'h.to':`Point d'arrivée`,'h.len':`Longueur du côté`,'h.elev':`Altitude (m)`,'h.dh':`Dénivelée (m)`,'h.lenkm':`Longueur (km)`,
+add5:`+ Ajouter 5 lignes`,lang:`Langue`,
+'r.mb':`COMPENSATION D'UN RÉSEAU PLANIMÉTRIQUE`,'r.params':`Paramètres du réseau`,'r.nctl':`Points d'appui :`,'r.ncor':`Type de correction :`,'r.nnew':`Points nouveaux :`,
+'r.aerr':`Erreur d'angle :`,'r.nd':`Distances mesurées :`,'r.derr':`Erreur de distance :`,'r.na':`Angles mesurés :`,'r.az':`Azimuts mesurés :`,
+'r.ctl':`COORDONNÉES DES POINTS D'APPUI`,'r.dsides':`DISTANCES COMPENSÉES`,'r.dangs':`ANGLES COMPENSÉS`,'r.rel':`PRÉCISION RELATIVE DES POINTS`,'r.adjc':`COORDONNÉES COMPENSÉES`,
+'r.px':`Coordonnée X`,'r.py':`Coordonnée Y`,'t.side':`Côté`,'t.dist':`Dist. mesurée`,'t.ell':`Corr. ellips.`,'t.cc':`Corr. proj.`,'t.v':`Correction v`,'t.adj':`Côté compensé`,
+'t.angb':`Angle avant comp.`,'t.ccmp':`Corr. proj. (")`,'t.anga':`Angle après comp.`,'t.azm':`Azimut`,
+'r.iter':`-Nombre d'itérations : {0} (m0 par itération : {1})`,'r.s0':`-Erreur moyenne quadratique de poids unitaire : {0}"`,'r.weak':`-Point le plus faible : {0} Mp = {1} m`,
+'r.weaklen':`-Longueur du côté le plus faible : ({0}) Ms/S = 1/ {1}`,'r.weakaz':`-Azimut du côté le plus faible : ({0}) Ma = {1}"`,
+'b.copy':`Copier le rapport (coller dans Excel/Word)`,'b.print':`Imprimer / Enregistrer en PDF`,'b.word':`Exporter en Word (.doc)`,
+'o.coord':`Exporter les coordonnées (coller dans Excel)`,'o.cpc':`Copier les coordonnées`,dof:`Degrés de liberté : {0}.`,'csv.pt':`Point`,
+'k.t':`VÉRIFICATION DES FERMETURES`,'k.loops':`Boucles de fermeture angulaire`,'k.found':` : {0} boucle(s) fermée(s) détectée(s)`,'k.none':` : aucune boucle fermée`,
+'k.loop':`Boucle {0} ({1} sommets) : {2}<br>{3}`,'k.skip':`Données angulaires insuffisantes pour vérifier cette boucle.`,'k.type':`Type : {0}, fermeture angulaire fβ = {1}"`,
+'k.in':`Angles intérieurs`,'k.out':`Angles extérieurs`,'k.routes':`Erreur de fermeture des cheminements entre points d'appui`,'k.noroute':` : aucun cheminement ne relie les points d'appui`,
+'k.route':`Cheminement {0} ({1} -&gt; {2}) : {3}<br>Longueur totale : {4} m, fermeture : fx = {5} m, fy = {6} m, fs = {7} m, fs/S = {8}`,
+'k.abort':`Le réseau est trop dense ; la recherche de boucles s'est arrêtée prématurément, la liste peut donc être incomplète.`,
+'d.t':`COMPENSATION D'UN RÉSEAU ALTIMÉTRIQUE`,'d.nroutes':`Cheminements :`,'d.cap':`Classe du réseau :`,'d.init':`DONNÉES INITIALES`,
+'d.route':`Cheminement (Route) {0}<br>Longueur totale : {1} km, fermeture : {2} m (fermeture tolérée : {3} m)`,
+'d.warn':`>>> ATTENTION : la fermeture dépasse la tolérance !`,'d.nochk':`Aucun cheminement fermant.`,
+'d.shc':`CORRECTIONS D'ALTITUDE`,'d.rname':`Cheminement`,'d.vm':`Corr. (m)`,'d.dhb':`Dénivelée comp. (m)`,
+'d.after':`ALTITUDES APRÈS COMPENSATION`,'d.hb':`H avant comp. (m)`,'d.ha':`H après comp. (m)`,'d.m':`Éc. type (mm)`,
+'d.s0':`-Erreur moyenne quadratique de poids unitaire : {0} (mm/√km)`,'d.weak':`-Erreur du point le plus faible ({0}) : {1} (mm)`,
+'d.out':`Exporter les altitudes (coller dans Excel)`,'d.cph':`Copier les altitudes`,
+'e.num':`Nombre invalide : {0}`,'e.sing':`Matrice normale singulière : le réseau manque de liaisons ou de points d'appui.`,
+'e.need':`{0} : données manquantes : {1}`,'w.ctl':`Point d'appui`,'w.ang':`Angle mesuré`,'w.dis':`Distance mesurée`,
+'e.nodata':`Aucune mesure saisie.`,'e.noang':`Erreur de mesure d'angle non saisie.`,'e.nodis':`Erreur de mesure de distance (a, b) non saisie.`,'e.noctl':`Aucun point d'appui.`,
+'e.nonew':`Aucun point nouveau à compenser.`,
+'e.nocoord':`Impossible de calculer les coordonnées approchées de : {0}. Ces points ne sont pas reliés à au moins 2 points d'appui par des angles et des distances ; vérifiez les noms des points.`,
+'e.dof':`Le nombre d'observations ({0}) ne dépasse pas le nombre d'inconnues ({1}) : il faut davantage d'angles/distances.`,
+'e.noconv':`La compensation ne converge pas : vérifiez les données (fautes grossières ou noms de points mal saisis possibles).`,
+'e.row':`Ligne {1} ({0}) : {2}`,'q.t':`DÉTECTION DES ERREURS DE SAISIE`,'q.pre':`Contrôle des données saisies`,
+'q.glob':`Test global du χ² : m0 = {0}" (σ angulaire saisi = {1}"), χ² = {2}, limite à 95 % = {3}, degrés de liberté = {4}.`,
+'q.gok':`Résultat : réussi, les données sont cohérentes avec la précision déclarée.`,
+'q.gbad':`Résultat : échec, les données peuvent contenir des fautes grossières (erreurs de saisie) ou la précision déclarée (a, b, σ angulaire) peut être inadaptée.`,
+'q.snoop':`Détection des fautes grossières après compensation (data snooping de Baarda)`,
+'q.hint':`w est le résidu normalisé de chaque observation ; le w le plus grand désigne l'observation la plus suspecte. Une valeur fausse fausse aussi les observations voisines : corrigez d'abord la première ligne du tableau puis recompensez. « Valeur suggérée » est la valeur que cette observation devrait avoir si elle est la seule erreur de saisie.`,
+'q.ok':`Aucune observation ne dépasse le seuil de suspicion (|w| &lt; {0}) : aucune erreur de saisie détectée.`,
+'q.h.tb':`Tableau`,'q.h.ln':`Ligne`,'q.h.dat':`Données saisies`,'q.h.w':`|w|`,'q.h.sug':`Valeur suggérée`,'q.h.lvl':`Niveau`,'q.hi':`Très suspect`,'q.mid':`Suspect`,
+'q.lowr':`Ces observations ont une redondance r &lt; 0.1 : une faute grossière y est presque indétectable (elle est absorbée par les coordonnées) : {0}. Vérifiez ces lignes vous-même.`,
+'p.ctl.dup':`Le point d'appui {0} est déclaré plusieurs fois (lignes {1} et {2}).`,
+'p.ang.rng':`Angle mesuré, ligne {0} [{1}] : degrés/minutes/secondes hors plage (degrés 0–360, minutes et secondes de 0 à moins de 60).`,
+'p.ang.same':`Angle mesuré, ligne {0} [{1}] : deux des trois noms de points sont identiques.`,
+'p.dis.nonpos':`Distance mesurée, ligne {0} [{1}] : la longueur doit être supérieure à 0.`,
+'p.dis.same':`Distance mesurée, ligne {0} [{1}] : le point de départ et le point d'arrivée sont identiques.`,
+'p.dis.dup':`Distance mesurée : la ligne {0} [{1}] et la ligne {2} [{3}] concernent le même côté mais diffèrent de {4} m.`,
+'p.ang.dup':`Angle mesuré : la ligne {0} [{1}] et la ligne {2} [{3}] concernent le même angle (ou son complément) mais diffèrent de {4}".`,
+'p.cd':`Distance mesurée, ligne {0} [{1}] : les deux extrémités sont des points d'appui ; la longueur calculée d'après les coordonnées est {2} m, soit {3} m d'écart avec la mesure.`,
+'p.ca':`Angle mesuré, ligne {0} [{1}] : les trois points sont des points d'appui ; l'angle calculé d'après les coordonnées est {2}, soit {3}" d'écart avec la mesure.`,
+'p.once':`Le point {0} n'apparaît qu'une fois ({1}, ligne {2}) : le nom du point a peut-être été mal saisi.`,
+'p.unused':`Le point d'appui {0} (ligne {1}) n'apparaît dans aucune observation : le nom du point a peut-être été mal saisi.`,
+'p.sim':`Les noms de points {0} et {1} sont très proches (seule la casse ou O/0, l/I/1 diffère) : il peut s'agir du même point mal saisi.`,
+'e.nomeas':`Aucun cheminement de dénivelée saisi.`,'e.ctlname':`Point d'appui sans nom : {0}`,'e.ctldup':`Nom de point d'appui en double : {0}`,'e.ctlh':`Le point d'appui {0} n'a pas d'altitude !`,
+'e.rname':`Le cheminement de la ligne {0} n'a pas de nom de point de départ/d'arrivée.`,'e.rmiss':`Le cheminement {0} - {1} n'a pas de dénivelée ou de longueur !`,'e.rlen':`La longueur du cheminement {0} - {1} doit être > 0 !`,
+'e.nonewh':`Aucun point nouveau à compenser !`,'e.fewobs':`Il y a moins de cheminements que de points nouveaux !`,'e.unconn':`Le point {0} n'est relié à aucun point d'appui !`,
+'doc.title':`Compensation`
+},
+ru:{
+title:`Комплексное уравнивание`,author:`Nguyễn Xuân Khoát - Ханойский горно-геологический университет`,choose:`Выберите тип уравнивания:`,
+'mb.t':`Уравнивание плановой сети`,'mb.d':`Теодолитные ходы и триангуляция: углы + расстояния, UTM/Гаусс`,
+'dc.t':`Уравнивание высотной сети`,'dc.d':`Нивелирная сеть: исходные пункты + ходы превышений`,
+back:`← Главная`,'mb.h1':`Уравнивание плановой сети`,'dc.h1':`Уравнивание высотной сети`,
+'sec.data':`Данные`,'sec.par':`Параметры`,
+'hint.mb':`Вводите данные по ячейкам, как в Excel (Enter — на строку вниз). Можно скопировать диапазон из Excel, щёлкнуть первую ячейку и вставить: данные распределятся по ячейкам.`,
+'hint.dc':`Вводите данные по ячейкам, как в Excel (Enter — на строку вниз). Можно скопировать диапазон из Excel, щёлкнуть первую ячейку и вставить. Пункт, которого нет в таблице исходных пунктов, считается новым.`,
+project:`Объект`,pg:`Ошибка измерения угла (")`,ph:`Средняя высота H (м)`,pj:`Проекция`,'pj.n':`Без поправки`,cc:`Вводить поправки в углы за проекцию`,
+solve:`Уравнять`,ex:`Загрузить пример`,cl:`Очистить всё`,hcap:`Класс сети (I–IV)`,
+'g.ctl':`Исходные пункты`,'g.ang':`Ввод измеренных углов`,'g.dis':`Ввод измеренных расстояний`,'g.ht':`Ходы превышений`,
+'h.name':`Имя пункта`,'h.left':`Левая`,'h.mid':`Средняя`,'h.right':`Правая`,'h.deg':`Град`,'h.min':`Мин`,'h.sec':`Сек`,
+'h.from':`Начальный пункт`,'h.to':`Конечный пункт`,'h.len':`Длина стороны`,'h.elev':`Отметка (м)`,'h.dh':`Превышение (м)`,'h.lenkm':`Длина (км)`,
+add5:`+ Добавить 5 строк`,lang:`Язык`,
+'r.mb':`УРАВНИВАНИЕ ПЛАНОВОЙ СЕТИ`,'r.params':`Параметры сети`,'r.nctl':`Исходных пунктов:`,'r.ncor':`Вид поправки:`,'r.nnew':`Новых пунктов:`,
+'r.aerr':`Ошибка измерения угла:`,'r.nd':`Измерено сторон:`,'r.derr':`Ошибка измерения сторон:`,'r.na':`Измерено углов:`,'r.az':`Измерено азимутов:`,
+'r.ctl':`КООРДИНАТЫ ИСХОДНЫХ ПУНКТОВ`,'r.dsides':`СТОРОНЫ ПОСЛЕ УРАВНИВАНИЯ`,'r.dangs':`УГЛЫ ПОСЛЕ УРАВНИВАНИЯ`,'r.rel':`ТАБЛИЦА ВЗАИМНОГО ПОЛОЖЕНИЯ ПУНКТОВ`,'r.adjc':`УРАВНЕННЫЕ КООРДИНАТЫ`,
+'r.px':`Координата X`,'r.py':`Координата Y`,'t.side':`Сторона`,'t.dist':`Изм. расст.`,'t.ell':`Попр. за эллипсоид`,'t.cc':`Попр. за проекцию`,'t.v':`Поправка v`,'t.adj':`Уравн. сторона`,
+'t.angb':`Угол до ур.`,'t.ccmp':`Попр. за проекцию (")`,'t.anga':`Угол после ур.`,'t.azm':`Азимут`,
+'r.iter':`-Число итераций уравнивания: {0} (m0 по итерациям: {1})`,'r.s0':`-СКО единицы веса: {0}"`,'r.weak':`-Слабейший пункт: {0}  Mp = {1} м`,
+'r.weaklen':`-Длина слабейшей стороны: ({0})  Ms/S = 1/ {1}`,'r.weakaz':`-Азимут слабейшей стороны: ({0})  Ma = {1}"`,
+'b.copy':`Копировать отчёт (вставить в Excel/Word)`,'b.print':`Печать / Сохранить в PDF`,'b.word':`Экспорт в Word (.doc)`,
+'o.coord':`Экспорт координат (вставить в Excel)`,'o.cpc':`Копировать координаты`,dof:`Число степеней свободы: {0}.`,'csv.pt':`Пункт`,
+'k.t':`КОНТРОЛЬ НЕВЯЗОК`,'k.loops':`Угловые замкнутые полигоны`,'k.found':`: найдено замкнутых полигонов — {0}`,'k.none':`: замкнутых полигонов нет`,
+'k.loop':`Полигон {0} (вершин: {1}): {2}<br>{3}`,'k.skip':`Недостаточно угловых данных для проверки этого полигона.`,'k.type':`Тип: {0}, угловая невязка fβ = {1}"`,
+'k.in':`Внутренние углы`,'k.out':`Внешние углы`,'k.routes':`Невязки теодолитных ходов между исходными пунктами`,'k.noroute':`: нет ходов, соединяющих исходные пункты`,
+'k.route':`Ход {0} ({1} -&gt; {2}): {3}<br>Общая длина хода: {4} м, невязки: fx = {5} м, fy = {6} м, fs = {7} м, fs/S = {8}`,
+'k.abort':`Сеть слишком плотная; поиск полигонов остановлен досрочно, поэтому список может быть неполным.`,
+'d.t':`УРАВНИВАНИЕ ВЫСОТНОЙ СЕТИ`,'d.nroutes':`Число ходов:`,'d.cap':`Класс сети:`,'d.init':`ИСХОДНЫЕ ДАННЫЕ`,
+'d.route':`Ход (Route) {0}<br>Общая длина хода: {1} км, невязка: {2} м (допустимая невязка: {3} м)`,
+'d.warn':`>>> ВНИМАНИЕ: невязка превышает допустимую!`,'d.nochk':`Замыкающих ходов нет.`,
+'d.shc':`ПОПРАВКИ К ПРЕВЫШЕНИЯМ`,'d.rname':`Ход`,'d.vm':`Попр. (м)`,'d.dhb':`Уравн. превыш. (м)`,
+'d.after':`ОТМЕТКИ ПОСЛЕ УРАВНИВАНИЯ`,'d.hb':`H до ур. (м)`,'d.ha':`H после ур. (м)`,'d.m':`СКО (мм)`,
+'d.s0':`-СКО единицы веса: {0} (мм/√км)`,'d.weak':`-СКО слабейшего пункта ({0}): {1} (мм)`,
+'d.out':`Экспорт отметок (вставить в Excel)`,'d.cph':`Копировать отметки`,
+'e.num':`Недопустимое число: {0}`,'e.sing':`Нормальная матрица вырождена: в сети не хватает связей или исходных пунктов.`,
+'e.need':`{0}: не хватает данных: {1}`,'w.ctl':`Исходный пункт`,'w.ang':`Измеренный угол`,'w.dis':`Измеренное расстояние`,
+'e.nodata':`Нет данных измерений.`,'e.noang':`Не введена ошибка измерения угла.`,'e.nodis':`Не введена ошибка измерения расстояний (a, b).`,'e.noctl':`Нет исходных пунктов.`,
+'e.nonew':`Нет новых пунктов для уравнивания.`,
+'e.nocoord':`Не удалось вычислить приближённые координаты: {0}. Эти пункты не связаны углами и расстояниями как минимум с 2 исходными пунктами; проверьте имена пунктов.`,
+'e.dof':`Число измерений ({0}) не превышает число неизвестных ({1}): нужны дополнительные углы/расстояния.`,
+'e.noconv':`Уравнивание не сошлось: проверьте данные (возможны грубые ошибки или опечатки в именах пунктов).`,
+'e.row':`Строка {1} ({0}): {2}`,'q.t':`ПОИСК ОШИБОК ВВОДА`,'q.pre':`Проверка введённых данных`,
+'q.glob':`Общий χ²-тест: m0 = {0}" (введённая СКП угла σ = {1}"), χ² = {2}, предел 95 % = {3}, число степеней свободы = {4}.`,
+'q.gok':`Результат: пройден, данные согласуются с заданной точностью.`,
+'q.gbad':`Результат: не пройден, в данных могут быть грубые ошибки (ошибки ввода) либо заданная точность (a, b, σ угла) не соответствует действительности.`,
+'q.snoop':`Поиск грубых ошибок после уравнивания (метод Баарда)`,
+'q.hint':`w — нормированная поправка каждого измерения; наибольшее w указывает на самое подозрительное измерение. Одна неверная величина искажает и соседние измерения, поэтому сначала исправьте первую строку таблицы и повторите уравнивание. «Предлагаемое» — значение, которое должно быть у этого измерения, если это единственная ошибка ввода.`,
+'q.ok':`Ни одно измерение не превышает порог подозрения (|w| &lt; {0}): ошибок ввода не обнаружено.`,
+'q.h.tb':`Таблица`,'q.h.ln':`Строка`,'q.h.dat':`Введённые данные`,'q.h.w':`|w|`,'q.h.sug':`Предлагаемое`,'q.h.lvl':`Уровень`,'q.hi':`Очень подозрительно`,'q.mid':`Подозрительно`,
+'q.lowr':`У этих измерений коэффициент избыточности r &lt; 0.1, поэтому грубую ошибку в них почти невозможно обнаружить (она поглощается координатами): {0}. Проверьте эти строки самостоятельно.`,
+'p.ctl.dup':`Исходный пункт {0} задан несколько раз (строки {1} и {2}).`,
+'p.ang.rng':`Измеренный угол, строка {0} [{1}]: градусы/минуты/секунды вне допустимого диапазона (градусы 0–360, минуты и секунды от 0 до 60 не включая).`,
+'p.ang.same':`Измеренный угол, строка {0} [{1}]: два из трёх названий пунктов совпадают.`,
+'p.dis.nonpos':`Измеренное расстояние, строка {0} [{1}]: длина должна быть больше 0.`,
+'p.dis.same':`Измеренное расстояние, строка {0} [{1}]: начальный и конечный пункты совпадают.`,
+'p.dis.dup':`Измеренное расстояние: строка {0} [{1}] и строка {2} [{3}] относятся к одной стороне, но различаются на {4} м.`,
+'p.ang.dup':`Измеренный угол: строка {0} [{1}] и строка {2} [{3}] относятся к одному углу (или его дополнению), но различаются на {4}".`,
+'p.cd':`Измеренное расстояние, строка {0} [{1}]: оба конца — исходные пункты; длина по координатам {2} м, расхождение с измерением {3} м.`,
+'p.ca':`Измеренный угол, строка {0} [{1}]: все три пункта — исходные; угол по координатам {2}, расхождение с измерением {3}".`,
+'p.once':`Пункт {0} встречается только один раз ({1}, строка {2}): возможно, название пункта введено неверно.`,
+'p.unused':`Исходный пункт {0} (строка {1}) не встречается в измерениях: возможно, название пункта введено неверно.`,
+'p.sim':`Названия пунктов {0} и {1} очень похожи (отличаются только регистром или O/0, l/I/1): возможно, это один пункт, введённый с ошибкой.`,
+'e.nomeas':`Нет ходов превышений.`,'e.ctlname':`У исходного пункта нет имени: {0}`,'e.ctldup':`Повторяющееся имя исходного пункта: {0}`,'e.ctlh':`У исходного пункта {0} нет отметки!`,
+'e.rname':`В ходе в строке {0} не указано имя начального/конечного пункта.`,'e.rmiss':`В ходе {0} - {1} не указано превышение или длина!`,'e.rlen':`Длина хода {0} - {1} должна быть > 0!`,
+'e.nonewh':`Нет новых пунктов для уравнивания!`,'e.fewobs':`Ходов меньше, чем новых пунктов!`,'e.unconn':`Пункт {0} не связан ни с одним исходным пунктом!`,
+'doc.title':`Уравнивание`
+},
+es:{
+title:`Ajuste general`,author:`Nguyễn Xuân Khoát - Universidad de Minas y Geología de Hanói`,choose:`Elija el tipo de ajuste:`,
+'mb.t':`Ajuste planimétrico`,'mb.d':`Redes de poligonales y triangulación: ángulos + distancias, UTM/Gauss`,
+'dc.t':`Ajuste altimétrico`,'dc.d':`Red de nivelación: puntos de control + líneas de desnivel`,
+back:`← Inicio`,'mb.h1':`Ajuste de red planimétrica`,'dc.h1':`Ajuste de red altimétrica`,
+'sec.data':`Datos`,'sec.par':`Parámetros`,
+'hint.mb':`Escriba celda por celda como en Excel (Enter baja a la fila siguiente). Puede copiar un rango desde Excel, hacer clic en la primera celda y pegar: los datos se reparten por las celdas.`,
+'hint.dc':`Escriba celda por celda como en Excel (Enter baja a la fila siguiente). Puede copiar un rango desde Excel, hacer clic en la primera celda y pegar. Todo punto que no esté en la tabla de puntos de control se considera un punto nuevo.`,
+project:`Proyecto`,pg:`Error de medición de ángulo (")`,ph:`Altura media H (m)`,pj:`Proyección`,'pj.n':`Sin corrección`,cc:`Corregir los ángulos según la proyección`,
+solve:`Ajustar`,ex:`Cargar ejemplo`,cl:`Borrar todo`,hcap:`Clase de red (I–IV)`,
+'g.ctl':`Puntos de control`,'g.ang':`Ángulos medidos`,'g.dis':`Distancias medidas`,'g.ht':`Líneas de desnivel`,
+'h.name':`Nombre del punto`,'h.left':`Izquierda`,'h.mid':`Centro`,'h.right':`Derecha`,'h.deg':`Grad`,'h.min':`Min`,'h.sec':`Seg`,
+'h.from':`Punto inicial`,'h.to':`Punto final`,'h.len':`Longitud del lado`,'h.elev':`Cota (m)`,'h.dh':`Desnivel (m)`,'h.lenkm':`Longitud (km)`,
+add5:`+ Añadir 5 filas`,lang:`Idioma`,
+'r.mb':`AJUSTE DE RED PLANIMÉTRICA`,'r.params':`Parámetros de la red`,'r.nctl':`Puntos de control:`,'r.ncor':`Tipo de corrección:`,'r.nnew':`Puntos nuevos:`,
+'r.aerr':`Error de ángulo:`,'r.nd':`Distancias medidas:`,'r.derr':`Error de distancia:`,'r.na':`Ángulos medidos:`,'r.az':`Acimutes medidos:`,
+'r.ctl':`COORDENADAS DE CONTROL`,'r.dsides':`DISTANCIAS AJUSTADAS`,'r.dangs':`ÁNGULOS AJUSTADOS`,'r.rel':`PRECISIÓN RELATIVA ENTRE PUNTOS`,'r.adjc':`COORDENADAS AJUSTADAS`,
+'r.px':`Coordenada X`,'r.py':`Coordenada Y`,'t.side':`Lado`,'t.dist':`Dist. medida`,'t.ell':`Corr. elips.`,'t.cc':`Corr. proy.`,'t.v':`Corrección v`,'t.adj':`Lado ajustado`,
+'t.angb':`Ángulo antes aj.`,'t.ccmp':`Corr. proy. (")`,'t.anga':`Ángulo después aj.`,'t.azm':`Acimut`,
+'r.iter':`-Iteraciones del ajuste: {0} (m0 por iteración: {1})`,'r.s0':`-Error medio cuadrático de peso unitario: {0}"`,'r.weak':`-Punto más débil: {0} Mp = {1} m`,
+'r.weaklen':`-Longitud del lado más débil: ({0}) Ms/S = 1/ {1}`,'r.weakaz':`-Acimut del lado más débil: ({0}) Ma = {1}"`,
+'b.copy':`Copiar informe (pegar en Excel/Word)`,'b.print':`Imprimir / Guardar PDF`,'b.word':`Exportar a Word (.doc)`,
+'o.coord':`Exportar coordenadas (pegar en Excel)`,'o.cpc':`Copiar coordenadas`,dof:`Grados de libertad: {0}.`,'csv.pt':`Punto`,
+'k.t':`COMPROBACIÓN DE CIERRES`,'k.loops':`Lazos de cierre angular`,'k.found':`: {0} lazo(s) cerrado(s) detectado(s)`,'k.none':`: no hay lazos cerrados`,
+'k.loop':`Lazo {0} ({1} vértices): {2}<br>{3}`,'k.skip':`No hay datos angulares suficientes para comprobar este lazo.`,'k.type':`Tipo: {0}, error de cierre angular fβ = {1}"`,
+'k.in':`Ángulos interiores`,'k.out':`Ángulos exteriores`,'k.routes':`Error de cierre de las poligonales entre puntos de control`,'k.noroute':`: ninguna poligonal une puntos de control`,
+'k.route':`Poligonal {0} ({1} -&gt; {2}): {3}<br>Longitud total: {4} m, error de cierre: fx = {5} m, fy = {6} m, fs = {7} m, fs/S = {8}`,
+'k.abort':`La red es demasiado densa; la búsqueda de lazos se detuvo antes de tiempo, por lo que la lista puede estar incompleta.`,
+'d.t':`AJUSTE DE RED ALTIMÉTRICA`,'d.nroutes':`Líneas medidas:`,'d.cap':`Clase de red:`,'d.init':`DATOS INICIALES`,
+'d.route':`Línea (Route) {0}<br>Longitud total: {1} km, error de cierre: {2} m (cierre admisible: {3} m)`,
+'d.warn':`>>> ADVERTENCIA: ¡el error de cierre supera el límite admisible!`,'d.nochk':`No hay líneas de cierre.`,
+'d.shc':`CORRECCIONES DE COTA`,'d.rname':`Línea`,'d.vm':`Corr. (m)`,'d.dhb':`Desnivel aj. (m)`,
+'d.after':`COTAS DESPUÉS DEL AJUSTE`,'d.hb':`H antes aj. (m)`,'d.ha':`H después aj. (m)`,'d.m':`Err. típico (mm)`,
+'d.s0':`-Error medio cuadrático de peso unitario: {0} (mm/√km)`,'d.weak':`-Error del punto más débil ({0}): {1} (mm)`,
+'d.out':`Exportar cotas (pegar en Excel)`,'d.cph':`Copiar cotas`,
+'e.num':`Número no válido: {0}`,'e.sing':`Matriz normal singular: a la red le faltan conexiones o puntos de control.`,
+'e.need':`{0}: faltan datos: {1}`,'w.ctl':`Punto de control`,'w.ang':`Ángulo medido`,'w.dis':`Distancia medida`,
+'e.nodata':`No hay mediciones introducidas.`,'e.noang':`No se ha introducido el error de medición de ángulo.`,'e.nodis':`No se ha introducido el error de medición de distancia (a, b).`,'e.noctl':`No hay puntos de control.`,
+'e.nonew':`No hay puntos nuevos que ajustar.`,
+'e.nocoord':`No se pueden calcular las coordenadas aproximadas de: {0}. Estos puntos no están conectados con al menos 2 puntos de control mediante ángulos y distancias; revise los nombres de los puntos.`,
+'e.dof':`El número de observaciones ({0}) no supera el de incógnitas ({1}): se necesitan más ángulos/distancias.`,
+'e.noconv':`El ajuste no converge: revise los datos (puede haber errores groseros o nombres de punto mal escritos).`,
+'e.row':`Fila {1} ({0}): {2}`,'q.t':`DETECCIÓN DE ERRORES DE ENTRADA`,'q.pre':`Comprobación de los datos introducidos`,
+'q.glob':`Prueba χ² global: m0 = {0}" (σ angular introducida = {1}"), χ² = {2}, límite al 95 % = {3}, grados de libertad = {4}.`,
+'q.gok':`Resultado: superada, los datos concuerdan con la precisión declarada.`,
+'q.gbad':`Resultado: no superada, los datos pueden contener errores groseros (errores de entrada) o la precisión declarada (a, b, σ angular) puede no ser realista.`,
+'q.snoop':`Detección de errores groseros tras el ajuste (data snooping de Baarda)`,
+'q.hint':`w es el residuo normalizado de cada observación; el w mayor señala la observación más sospechosa. Un valor erróneo también distorsiona las observaciones cercanas, así que corrija primero la primera fila de la tabla y vuelva a ajustar. «Sugerido» es el valor que debería tener esa observación si es el único error de entrada.`,
+'q.ok':`Ninguna observación supera el límite de sospecha (|w| &lt; {0}): no se detectaron errores de entrada.`,
+'q.h.tb':`Tabla`,'q.h.ln':`Fila`,'q.h.dat':`Datos introducidos`,'q.h.w':`|w|`,'q.h.sug':`Sugerido`,'q.h.lvl':`Nivel`,'q.hi':`Muy sospechoso`,'q.mid':`Sospechoso`,
+'q.lowr':`Estas observaciones tienen redundancia r &lt; 0.1, por lo que un error grosero en ellas es casi indetectable (queda absorbido por las coordenadas): {0}. Revise usted mismo estas filas.`,
+'p.ctl.dup':`El punto de control {0} está declarado varias veces (filas {1} y {2}).`,
+'p.ang.rng':`Ángulo medido, fila {0} [{1}]: grados/minutos/segundos fuera de rango (grados 0–360, minutos y segundos de 0 a menos de 60).`,
+'p.ang.same':`Ángulo medido, fila {0} [{1}]: dos de los tres nombres de punto coinciden.`,
+'p.dis.nonpos':`Distancia medida, fila {0} [{1}]: la longitud debe ser mayor que 0.`,
+'p.dis.same':`Distancia medida, fila {0} [{1}]: el punto inicial y el final coinciden.`,
+'p.dis.dup':`Distancia medida: la fila {0} [{1}] y la fila {2} [{3}] son el mismo lado pero difieren en {4} m.`,
+'p.ang.dup':`Ángulo medido: la fila {0} [{1}] y la fila {2} [{3}] son el mismo ángulo (o su complemento) pero difieren en {4}".`,
+'p.cd':`Distancia medida, fila {0} [{1}]: ambos extremos son puntos de control; la longitud calculada con las coordenadas es {2} m, con una diferencia de {3} m respecto a la medida.`,
+'p.ca':`Ángulo medido, fila {0} [{1}]: los tres puntos son de control; el ángulo calculado con las coordenadas es {2}, con una diferencia de {3}" respecto a la medida.`,
+'p.once':`El punto {0} aparece una sola vez ({1}, fila {2}): puede que el nombre del punto esté mal escrito.`,
+'p.unused':`El punto de control {0} (fila {1}) no aparece en las observaciones: puede que el nombre del punto esté mal escrito.`,
+'p.sim':`Los nombres de punto {0} y {1} son muy parecidos (solo difieren en mayúsculas/minúsculas u O/0, l/I/1): puede ser el mismo punto mal escrito.`,
+'e.nomeas':`No hay líneas de desnivel introducidas.`,'e.ctlname':`Punto de control sin nombre: {0}`,'e.ctldup':`Nombre de punto de control duplicado: {0}`,'e.ctlh':`¡El punto de control {0} no tiene cota!`,
+'e.rname':`A la línea de la fila {0} le falta el nombre del punto inicial/final.`,'e.rmiss':`¡A la línea {0} - {1} le falta el desnivel o la longitud!`,'e.rlen':`¡La longitud de la línea {0} - {1} debe ser > 0!`,
+'e.nonewh':`¡No hay puntos nuevos que ajustar!`,'e.fewobs':`¡Hay menos líneas que puntos nuevos!`,'e.unconn':`¡El punto {0} no está conectado con ningún punto de control!`,
+'doc.title':`Ajuste`
+}
+};
+const err=(k,...a)=>{const e=new Error(t(k,...a));e.k=k;e.a=a;return e};
+const K=(k,...a)=>({k,a});
+let lang='vi';try{const sv=localStorage.getItem('bs-lang');if(sv&&I18N[sv])lang=sv}catch(e){}
+function t(k,...a){const d=I18N[lang]||I18N.vi;let s=d[k];if(s===undefined&&I18N.en)s=I18N.en[k];if(s===undefined)s=I18N.vi[k];if(s===undefined)s=k;
+ return s.replace(/\{(\d+)\}/g,(m,i)=>{let v=a[+i];if(v&&typeof v==='object'&&v.k)v=t(v.k,...(v.a||[]));return v===undefined?'':v})}
+
+const $=i=>document.getElementById(i),PI=Math.PI,RHO=206265,R1=6371110,R2=6371000;
+const num=s=>{let t=String(s).trim().replace(/\s/g,'');const c=t.lastIndexOf(','),d=t.lastIndexOf('.');
+ if(c>=0&&d>=0)t=c>d?t.replace(/\./g,'').replace(',','.'):t.replace(/,/g,'');
+ else if(c>=0)t=t.split(',').length>2?t.replace(/,/g,''):t.replace(',','.');
+ else if(d>=0&&t.split('.').length>2)t=t.replace(/\./g,'');
+ if(!/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(t))throw err('e.num',s);return parseFloat(t)};
+const rows=t=>t.split('\n').map(l=>l.trim()).filter(l=>l&&l[0]!=='#').map(l=>l.split(/[\s;]+/));
+const azm=(dx,dy)=>{let a=Math.atan2(dy,dx);return a<0?a+2*PI:a};
+const wrap=s=>{while(s>648000)s-=1296000;while(s<=-648000)s+=1296000;return s};
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function dms(s,d){const f=Math.pow(10,d);let t=Math.round(Math.abs(s)*f);const D=Math.floor(t/(3600*f));t-=D*3600*f;const M=Math.floor(t/(60*f));t-=M*60*f;return(s<0?'-':'')+D+'° '+String(M).padStart(2,'0')+"' "+(t/f).toFixed(d).padStart(d?3+d:2,'0')+'"'}
+function inv(M){const n=M.length,a=M.map((r,i)=>{const x=new Float64Array(2*n);x.set(r);x[n+i]=1;return x});
+ for(let i=0;i<n;i++){let p=i;for(let k=i+1;k<n;k++)if(Math.abs(a[k][i])>Math.abs(a[p][i]))p=k;
+  if(Math.abs(a[p][i])<1e-9)throw err('e.sing');
+  [a[i],a[p]]=[a[p],a[i]];const d=a[i][i];for(let j=0;j<2*n;j++)a[i][j]/=d;
+  for(let k=0;k<n;k++)if(k!==i){const f=a[k][i];if(f)for(let j=i;j<2*n;j++)a[k][j]-=f*a[i][j]}}
+ return a.map(r=>Array.from(r.slice(n)))}
+
+function read(){
+ const need=(r,k,w)=>{for(let i=0;i<k;i++)if(!r[i])throw err('e.need',K(w),r.join(' '))};
+ const at=(w,r,f)=>{try{return f()}catch(e){if(e.k==='e.num'||e.k==='e.need')throw err('e.row',K(w),r.ln,K(e.k,...e.a));throw e}},rw=r=>r.join(' ').replace(/\s+/g,' ').trim();
+ const ctl=G('c').map(r=>at('w.ctl',r,()=>{need(r,3,'w.ctl');return{n:r[0],x:num(r[1]),y:num(r[2]),ln:r.ln,raw:rw(r)}}));
+ const ang=G('g').map(r=>at('w.ang',r,()=>{need(r,4,'w.ang');const dg=num(r[3]),mi=num(r[4]||0),se=num(r[5]||0);return{t:r[0],g:r[1],p:r[2],s:dg*3600+mi*60+se,dg,mi,se,ln:r.ln,raw:rw(r)}}));
+ const dis=G('d').map(r=>at('w.dis',r,()=>{need(r,3,'w.dis');return{a:r[0],b:r[1],s:num(r[2]),ln:r.ln,raw:rw(r)}}));
+ const P={a:num($('pa').value),b:num($('pb').value),g:num($('pg').value),h:num($('ph').value||0),pj:$('pj').value,cc:$('cc').checked,pr:$('pn').value.trim()};
+ if(!ang.length&&!dis.length)throw err('e.nodata');
+ if(!(P.g>0))throw err('e.noang');
+ if(!(P.a+P.b>0))throw err('e.nodis');
+ if(!ctl.length)throw err('e.noctl');
+ return{ctl,ang,dis,P}}
+
+function solve(I){
+ const P=I.P,ctl=new Map(I.ctl.map(c=>[c.n,c])),nm=[],id=new Map();
+ const add=x=>{if(!ctl.has(x)&&!id.has(x)){id.set(x,nm.length);nm.push(x)}};
+ I.ang.forEach(a=>{add(a.t);add(a.g);add(a.p)});I.dis.forEach(d=>{add(d.a);add(d.b)});
+ const n=nm.length;if(!n)throw err('e.nonew');
+ I.ctl.forEach(c=>{id.set(c.n,nm.length);nm.push(c.n)});
+ const T=nm.length,X=new Array(T).fill(NaN),Y=new Array(T).fill(NaN);
+ I.ctl.forEach(c=>{const i=id.get(c.n);X[i]=c.x;Y[i]=c.y});
+ const A=I.ang.map(a=>({t:id.get(a.t),g:id.get(a.g),p:id.get(a.p),s:a.s,s0:a.s,c:0}));
+ const D=I.dis.map(d=>({a:id.get(d.a),b:id.get(d.b),s:d.s,s0:d.s,e:0,k:0}));
+ const dm=new Map();D.forEach(d=>dm.set(d.a<d.b?d.a+'_'+d.b:d.b+'_'+d.a,d.s));
+ const dist=(a,b)=>dm.get(a<b?a+'_'+b:b+'_'+a),kn=i=>!isNaN(X[i]);
+ const angErr=()=>A.reduce((e,a)=>kn(a.t)&&kn(a.g)&&kn(a.p)?e+Math.abs(wrap((azm(X[a.p]-X[a.g],Y[a.p]-Y[a.g])-azm(X[a.t]-X[a.g],Y[a.t]-Y[a.g]))*648000/PI-a.s)):e,0);
+ /* toạ độ gần đúng: (1) lan truyền theo góc+cạnh, (2) giao hội cạnh, (3) khung cục bộ với phương vị giả định rồi xoay về điểm gốc */
+ const step=(x,y,known)=>{let any=false;
+  for(let ch=true,it=0;ch&&it<2000;it++){ch=false;
+   for(const a of A){if(!known(a.g))continue;const r=a.s*PI/648000;
+    if(known(a.t)&&!known(a.p)){const s=dist(a.g,a.p);if(s){const z=azm(x[a.t]-x[a.g],y[a.t]-y[a.g])+r;x[a.p]=x[a.g]+s*Math.cos(z);y[a.p]=y[a.g]+s*Math.sin(z);ch=any=true}}
+    else if(known(a.p)&&!known(a.t)){const s=dist(a.g,a.t);if(s){const z=azm(x[a.p]-x[a.g],y[a.p]-y[a.g])-r;x[a.t]=x[a.g]+s*Math.cos(z);y[a.t]=y[a.g]+s*Math.sin(z);ch=any=true}}}}
+  return any};
+ const inter=()=>{for(let u=0;u<n;u++){if(kn(u))continue;const ks=[];
+   D.forEach(d=>{const o=d.a===u?d.b:d.b===u?d.a:-1;if(o>=0&&kn(o))ks.push([o,d.s])});
+   if(ks.length<2)continue;const[[p,sp],[q,sq]]=ks,dx=X[q]-X[p],dy=Y[q]-Y[p],d=Math.hypot(dx,dy);if(!d)continue;
+   const aa=(sp*sp-sq*sq+d*d)/(2*d),h=Math.sqrt(Math.max(0,sp*sp-aa*aa)),bx=X[p]+aa*dx/d,by=Y[p]+aa*dy/d;
+   const c=[[bx-h*dy/d,by+h*dx/d],[bx+h*dy/d,by-h*dx/d]];let best=0,be=1e99;
+   c.forEach((z,k)=>{X[u]=z[0];Y[u]=z[1];const e=angErr();if(e<be){be=e;best=k}});
+   X[u]=c[best][0];Y[u]=c[best][1];return true}return false};
+ const loc=()=>{for(const d of D){let k,u;if(kn(d.a)&&!kn(d.b)){k=d.a;u=d.b}else if(kn(d.b)&&!kn(d.a)){k=d.b;u=d.a}else continue;
+   const lx=new Array(T).fill(NaN),ly=new Array(T).fill(NaN);lx[k]=X[k];ly[k]=Y[k];lx[u]=X[k]+d.s;ly[u]=Y[k];
+   step(lx,ly,i=>!isNaN(lx[i]));
+   let k2=-1,bd=0;for(let i=0;i<T;i++)if(i!==k&&kn(i)&&!isNaN(lx[i])){const e=Math.hypot(lx[i]-lx[k],ly[i]-ly[k]);if(e>bd){bd=e;k2=i}}
+   if(k2<0)continue;
+   const th=azm(X[k2]-X[k],Y[k2]-Y[k])-azm(lx[k2]-lx[k],ly[k2]-ly[k]),c=Math.cos(th),s=Math.sin(th);let ok=false;
+   for(let i=0;i<n;i++)if(!kn(i)&&!isNaN(lx[i])){const dx=lx[i]-lx[k],dy=ly[i]-ly[k];X[i]=X[k]+dx*c-dy*s;Y[i]=Y[k]+dx*s+dy*c;ok=true}
+   if(ok)return true}return false};
+ for(let g=0;g<500;g++){if(!nm.slice(0,n).some((_,i)=>!kn(i)))break;if(step(X,Y,kn)||inter()||loc())continue;break}
+ const bad=nm.slice(0,n).filter((_,i)=>!kn(i));
+ if(bad.length)throw err('e.nocoord',bad.join(', '));
+ const nu=2*n,m=A.length+D.length;
+ if(m<=nu)throw err('e.dof',m,nu);
+ let Q,V,s0,RK,WK;const hist=[];
+ /* bình sai lặp: lặp lại cho tới khi sai số trung phương trọng số đơn vị (m0) không giảm nữa thì dừng.
+    m0 mỗi lần lặp tính theo số hiệu chỉnh thật L tại toạ độ hiện tại: m0=sqrt([pLL]/(m-nu)) */
+ function adj(){
+  const run=[];hist.push(run);let s0p=Infinity,bk=null;
+  for(let it=0;it<40;it++){
+   const R=[],L=[],W=[];
+   A.forEach(a=>{const tx=X[a.t]-X[a.g],ty=Y[a.t]-Y[a.g],px=X[a.p]-X[a.g],py=Y[a.p]-Y[a.g],st=Math.hypot(tx,ty),sp=Math.hypot(px,py),zt=azm(tx,ty),zp=azm(px,py);
+    const At=RHO*Math.sin(zt)/st,Bt=-RHO*Math.cos(zt)/st,Ap=RHO*Math.sin(zp)/sp,Bp=-RHO*Math.cos(zp)/sp,r=[];
+    if(a.p<n)r.push([2*a.p,-Ap],[2*a.p+1,-Bp]);if(a.t<n)r.push([2*a.t,At],[2*a.t+1,Bt]);if(a.g<n)r.push([2*a.g,Ap-At],[2*a.g+1,Bp-Bt]);
+    R.push(r);L.push(wrap((zp-zt)*648000/PI-a.s));W.push(1)});
+   D.forEach(d=>{const dx=X[d.b]-X[d.a],dy=Y[d.b]-Y[d.a],s=Math.hypot(dx,dy),c=dx/s,sn=dy/s,r=[];
+    if(d.a<n)r.push([2*d.a,-c],[2*d.a+1,-sn]);if(d.b<n)r.push([2*d.b,c],[2*d.b+1,sn]);
+    const mc=P.a+P.b*d.s/1000;R.push(r);L.push(s-d.s);W.push(Math.pow(1000*P.g/mc,2))});
+   let p0=0;L.forEach((l,i)=>p0+=W[i]*l*l);const sc=Math.sqrt(p0/(m-nu));run.push(sc);
+   const N=Array.from({length:nu},()=>new Float64Array(nu)),bv=new Float64Array(nu);
+   R.forEach((r,i)=>r.forEach(([c1,v1])=>{bv[c1]+=W[i]*v1*L[i];r.forEach(([c2,v2])=>{N[c1][c2]+=W[i]*v1*v2})}));
+   const Qn=inv(N),dl=new Float64Array(nu);
+   for(let i=0;i<nu;i++)for(let j=0;j<nu;j++)dl[i]-=Qn[i][j]*bv[j];
+   let pv=0;const Vn=R.map((r,i)=>{let v=L[i];r.forEach(([c,val])=>v+=val*dl[c]);pv+=W[i]*v*v;return v});
+   const stop=it>0&&s0p-sc<=1e-12*s0p;                    /* m0 không giảm nữa */
+   if(stop&&sc>s0p*(1+1e-9)&&bk){X.splice(0,X.length,...bk.X);Y.splice(0,Y.length,...bk.Y);return}  /* m0 tăng: lùi về lần lặp trước (Q,V,s0 vẫn là của lần đó) */
+   Q=Qn;V=Vn;RK=R;WK=W;s0=Math.sqrt(pv/(m-nu));s0p=sc;bk={X:X.slice(),Y:Y.slice()};
+   for(let i=0;i<n;i++){X[i]+=dl[2*i];Y[i]+=dl[2*i+1]}
+   if(stop)return}
+  throw err('e.noconv')}
+ adj();
+ const k0={g:1,u3:.9999,u6:.9996}[P.pj];
+ if(P.h||k0||P.cc){
+  D.forEach(d=>{d.e=-d.s*P.h/R1;d.s+=d.e;
+   if(k0){const y=(Y[d.a]+Y[d.b])/2-5e5,q=y*y/R1/R1/2;d.k=P.pj==='g'?q*d.s:(k0+q-1)*d.s;d.s+=d.k}});
+  if(P.cc&&k0)A.forEach(a=>{const Yi=Y[a.g]-5e5,Yk=Y[a.t]-5e5,Yj=Y[a.p]-5e5,Xi=X[a.g],Xk=X[a.t],Xj=X[a.p];let rk,rj;
+   if(P.pj==='g'){rk=(Xk-Xi)/(6*R2*R2)*(2*Yi+Yk)*RHO;rj=(Xj-Xi)/(6*R2*R2)*(2*Yi+Yj)*RHO}
+   else{const c=RHO/(4*R2*R2*k0*k0);rk=c*(Yi+Yk)*(Xi-Xk);rj=c*(Yi+Yj)*(Xi-Xj)}
+   a.c=rj-rk;a.s+=a.c});
+  adj()}
+ const qf=(idx,F)=>{let q=0;idx.forEach((i,a)=>idx.forEach((j,b)=>q+=F[a]*F[b]*Q[i][j]));return q};
+ /* hệ số bội r_i = 1 - p_i·a_i·Q·a_iᵀ ; sai số chuẩn hoá (Baarda) w_i = |v_i|·√p_i / (σ0·√r_i) với σ0 = sai số góc đã nhập */
+ const red=RK.map((r,i)=>{let q=0;r.forEach(([c1,v1])=>r.forEach(([c2,v2])=>q+=v1*v2*Q[c1][c2]));return 1-WK[i]*q});
+ const wt=i=>red[i]>1e-6?Math.abs(V[i])*Math.sqrt(WK[i])/(P.g*Math.sqrt(red[i])):0;
+ const pts=[];let mpm=0,mpn='';
+ for(let i=0;i<n;i++){const Mx=s0*Math.sqrt(Q[2*i][2*i]),My=s0*Math.sqrt(Q[2*i+1][2*i+1]),Mp=Math.hypot(Mx,My);pts.push({n:nm[i],x:X[i],y:Y[i],Mx,My,Mp});if(Mp>mpm){mpm=Mp;mpn=nm[i]}}
+ let msMin=1e99,msN='',maMax=0,maN='';
+ const ds=D.map((d,i)=>{const dx=X[d.b]-X[d.a],dy=Y[d.b]-Y[d.a],s=Math.hypot(dx,dy),z=azm(dx,dy),c=dx/s,sn=dy/s,idx=[],Fs=[],Fa=[];
+  if(d.a<n){idx.push(2*d.a,2*d.a+1);Fs.push(-c,-sn);Fa.push(RHO*sn/s,-RHO*c/s)}
+  if(d.b<n){idx.push(2*d.b,2*d.b+1);Fs.push(c,sn);Fa.push(-RHO*sn/s,RHO*c/s)}
+  let ms=0,ma=0;if(idx.length){ms=s0*Math.sqrt(qf(idx,Fs));ma=s0*Math.sqrt(qf(idx,Fa))}
+  const nmab=nm[d.a]+' - '+nm[d.b];
+  if(ms>0&&s/ms<msMin){msMin=s/ms;msN=nmab}if(ma>maMax){maMax=ma;maN=nmab}
+  return{n:nmab,na:nm[d.a],nb:nm[d.b],s0:d.s0,e:d.e,k:d.k,v:V[A.length+i],s,ms,z,ma,ln:I.dis[i].ln,raw:I.dis[i].raw,r:red[A.length+i],w:wt(A.length+i),sug:red[A.length+i]>=.1?d.s0+V[A.length+i]/red[A.length+i]:null}});
+ const as=A.map((a,i)=>({t:nm[a.t],g:nm[a.g],p:nm[a.p],s0:a.s0,s:a.s,c:a.c,v:V[i],b:a.s+V[i],ln:I.ang[i].ln,raw:I.ang[i].raw,r:red[i],w:wt(i),sug:red[i]>=.1?(((a.s0+V[i]/red[i])%1296000)+1296000)%1296000:null}));
+ return{nm,n,X,Y,A,D,pts,ds,as,s0,mpm,mpn,msMin,msN,maMax,maN,m,nu,I,it:hist}}
+
+/* ===== KIỂM TRA KHÉP VÒNG LƯỚI MẶT BẰNG (chuyển từ sub KiemTraKhepVong của VBA) ===== */
+function khep(I){
+ const ctl=new Map(I.ctl.map(c=>[c.n,[c.x,c.y]])),adj=new Map(),SEP='\u0001';
+ const link=(a,b)=>{if(!adj.has(a))adj.set(a,new Map());adj.get(a).set(b,true)};
+ I.ang.forEach(a=>{[a.t,a.p].forEach(v=>{if(a.g&&v){link(a.g,v);link(v,a.g)}})});
+ let steps=0,aborted=false;const LIM=3e6;
+ /* 1. các vòng khép: tìm mọi chu trình trong đồ thị nối bởi các góc đo */
+ const raw=[];
+ const dfsL=(st,cur,path)=>{if(aborted)return;const nb=adj.get(cur);if(!nb)return;
+  for(const w of nb.keys()){if(++steps>LIM){aborted=true;return}
+   if(w===st&&path.length>=3)raw.push(path.slice());
+   else if(!path.includes(w)&&path.length<15){path.push(w);dfsL(st,w,path);path.pop()}}};
+ for(const k of adj.keys())dfsL(k,k,[k]);
+ const seen=new Set(),uniq=[];
+ raw.forEach(p=>{if(p.length<3)return;const key=p.slice().sort().join(SEP);if(!seen.has(key)){seen.add(key);uniq.push(p)}});
+ const rowOf=(g,a,b)=>I.ang.find(r=>r.g===g&&((r.t===a&&r.p===b)||(r.t===b&&r.p===a)));
+ const loops=uniq.map((p,i)=>{const n=p.length,rows=[];
+  for(let j=0;j<n;j++){const r=rowOf(p[j],p[(j-1+n)%n],p[(j+1)%n]);if(!r)return{idx:i+1,n,chain:p.join(' -> ')+' -> '+p[0],skip:true};rows.push(r)}
+  const o=rows.map(r=>r.s),iv=o.map(s=>1296000-s),St=(n-2)*180*3600,Sn=(n+2)*180*3600;
+  let best=Infinity,bt='',bv=0,bs=0;
+  for(let m=0;m<(1<<n);m++){let c=0;for(let k=0;k<n;k++)c+=(m>>k)&1?iv[k]:o[k];
+   let e=Math.abs(c-St);if(e<best){best=e;bt='in';bv=St;bs=c}
+   e=Math.abs(c-Sn);if(e<best){best=e;bt='out';bv=Sn;bs=c}}
+  return{idx:i+1,n,chain:p.join(' -> ')+' -> '+p[0],type:bt,f:bs-bv}});
+ /* 2. tuyến đường chuyền giữa các điểm gốc */
+ const dm=new Map();I.dis.forEach(d=>{dm.set(d.a+SEP+d.b,d.s);dm.set(d.b+SEP+d.a,d.s)});
+ const rts=[];
+ const dfsR=(st,cur,path)=>{if(aborted)return;const nb=adj.get(cur);if(!nb)return;
+  for(const w of nb.keys()){if(++steps>LIM){aborted=true;return}
+   if(ctl.has(w)&&w!==st&&path.length>=1)rts.push([...path,w]);
+   else if(!ctl.has(w)&&!path.includes(w)&&path.length<20){path.push(w);dfsR(st,w,path);path.pop()}}};
+ for(const k of ctl.keys())dfsR(k,k,[k]);
+ const rseen=new Set(),ur=[];
+ rts.forEach(r=>{const a=r[0],b=r[r.length-1],key=(a<=b?r:r.slice().reverse()).join(SEP);if(!rseen.has(key)){rseen.add(key);ur.push(r)}});
+ const routes=[];let ri=0;
+ ur.forEach(nd=>{const n=nd.length,[x0,y0]=ctl.get(nd[0]),[x1,y1]=ctl.get(nd[n-1]),px=[x0],py=[y0];let az=0;
+  for(let j=0;j<n-1;j++){const a=nd[j],b=nd[j+1],sg=dm.get(a+SEP+b)||0;
+   if(j>0){const pv=nd[j-1];for(const r of I.ang){if(r.g!==a)continue;
+     if(r.t===pv&&r.p===b){az+=Math.PI-r.s*Math.PI/648000;break}
+     else if(r.t===b&&r.p===pv){az+=Math.PI+r.s*Math.PI/648000;break}}}
+   px.push(px[j]+sg*Math.cos(az));py.push(py[j]+sg*Math.sin(az))}
+  const rot=Math.atan2(y1-y0,x1-x0)-Math.atan2(py[n-1]-py[0],px[n-1]-px[0]),dx=px[n-1]-x0,dy=py[n-1]-y0;
+  const fx=x0+dx*Math.cos(rot)-dy*Math.sin(rot)-x1,fy=y0+dx*Math.sin(rot)+dy*Math.cos(rot)-y1,fs=Math.hypot(fx,fy);
+  if(fs<=0.5){let sum=0;for(let j=0;j<n-1;j++)sum+=dm.get(nd[j]+SEP+nd[j+1])||0;
+   const pd=+sum.toFixed(3),pf=+fs.toFixed(3);
+   routes.push({idx:++ri,s:nd[0],e:nd[n-1],route:nd.join(' -> '),sum,fx,fy,fs,ratio:pf>0?'1/'+Math.round(pd/pf):'0'})}});
+ return{loops,routes,aborted}}
+
+function khepHtml(I){
+ let K2;try{K2=khep(I)}catch(e){return''}
+ const f=(v,d)=>(Math.abs(v)<0.5*Math.pow(10,-d)?0:v).toFixed(d);
+ let h='<h3>'+t('k.t')+'</h3><p class="ln"><b>'+t('k.loops')+'</b>'+(K2.loops.length?t('k.found',K2.loops.length):t('k.none'))+'</p>';
+ K2.loops.forEach(l=>{h+='<p class="ln">'+t('k.loop',l.idx,l.n,esc(l.chain),l.skip?t('k.skip'):t('k.type',t('k.'+l.type),f(l.f,2)))+'</p>'});
+ h+='<p class="ln"><b>'+t('k.routes')+'</b>'+(K2.routes.length?'':t('k.noroute'))+'</p>';
+ K2.routes.forEach(r=>{h+='<p class="ln">'+t('k.route',r.idx,esc(r.s),esc(r.e),esc(r.route),f(r.sum,3),f(r.fx,3),f(r.fy,3),f(r.fs,3),r.ratio)+'</p>'});
+ if(K2.aborted)h+='<p class="ln err">'+t('k.abort')+'</p>';
+ return h}
+
+/* ===== DÒ SỐ LIỆU NHẬP NHẦM =====
+   (1) pre(): kiểm tra trực tiếp số liệu nhập, KHÔNG cần bình sai: tên điểm, phạm vi độ/phút/giây, trị đo trùng lặp,
+       trị đo mà các điểm đầu cuối đều là điểm gốc (so với toạ độ).
+   (2) chkHtml(): sau bình sai, kiểm định Baarda (data snooping) chỉ ra trị đo nghi nhầm + dòng + giá trị gợi ý. */
+function pre(I){
+ const P=I.P,out=[],W=(k,...a)=>out.push(K(k,...a)),SP='\u0001';
+ const nz=s=>s.toLowerCase().replace(/o/g,'0').replace(/[li]/g,'1'),mcOf=s=>(P.a+P.b*s/1000)/1000;
+ const cnt=new Map(),use=(n,tb,ln)=>{if(!cnt.has(n))cnt.set(n,{c:0,tb,ln,rows:new Set()});const e=cnt.get(n),k=tb+ln;if(!e.rows.has(k)){e.rows.add(k);e.c++;e.tb=tb;e.ln=ln}};
+ I.ang.forEach(a=>[a.t,a.g,a.p].forEach(n=>use(n,'w.ang',a.ln)));I.dis.forEach(d=>[d.a,d.b].forEach(n=>use(n,'w.dis',d.ln)));
+ const ctl=new Map();I.ctl.forEach(c=>{if(ctl.has(c.n))W('p.ctl.dup',esc(c.n),ctl.get(c.n).ln,c.ln);else ctl.set(c.n,c)});
+ /* góc */
+ I.ang.forEach(a=>{
+  if(a.dg<0||a.dg>360||a.mi<0||a.mi>=60||a.se<0||a.se>=60)W('p.ang.rng',a.ln,esc(a.raw));
+  const same=a.t===a.g||a.g===a.p||a.t===a.p;if(same)W('p.ang.same',a.ln,esc(a.raw));
+  if(!same&&ctl.has(a.t)&&ctl.has(a.g)&&ctl.has(a.p)){const g=ctl.get(a.g),t0=ctl.get(a.t),p=ctl.get(a.p);
+   const d=wrap((azm(p.x-g.x,p.y-g.y)-azm(t0.x-g.x,t0.y-g.y))*648000/PI-a.s);
+   if(Math.abs(d)>5*P.g)W('p.ca',a.ln,esc(a.raw),dms((((a.s+d)%1296000)+1296000)%1296000,1),d.toFixed(1))}});
+ for(let i=0;i<I.ang.length;i++)for(let j=i+1;j<I.ang.length;j++){const a=I.ang[i],b=I.ang[j];if(a.g!==b.g)continue;let d=null;
+  if(a.t===b.t&&a.p===b.p)d=wrap(a.s-b.s);else if(a.t===b.p&&a.p===b.t)d=wrap(a.s+b.s-1296000);
+  if(d!==null&&Math.abs(d)>4*Math.SQRT2*P.g)W('p.ang.dup',a.ln,esc(a.raw),b.ln,esc(b.raw),Math.abs(d).toFixed(1))}
+ /* cạnh */
+ I.dis.forEach(d=>{
+  if(!(d.s>0))W('p.dis.nonpos',d.ln,esc(d.raw));
+  if(d.a===d.b)W('p.dis.same',d.ln,esc(d.raw));
+  else if(P.pj==='n'&&ctl.has(d.a)&&ctl.has(d.b)){const u=ctl.get(d.a),v=ctl.get(d.b),s=Math.hypot(u.x-v.x,u.y-v.y),df=d.s-s;
+   if(Math.abs(df)>4*mcOf(d.s)+0.01+Math.abs(P.h)*d.s/R1)W('p.cd',d.ln,esc(d.raw),s.toFixed(3),df.toFixed(3))}});
+ for(let i=0;i<I.dis.length;i++)for(let j=i+1;j<I.dis.length;j++){const a=I.dis[i],b=I.dis[j];
+  if((a.a===b.a&&a.b===b.b)||(a.a===b.b&&a.b===b.a)){const df=Math.abs(a.s-b.s);
+   if(df>4*Math.SQRT2*mcOf(a.s)+0.002)W('p.dis.dup',a.ln,esc(a.raw),b.ln,esc(b.raw),df.toFixed(3))}}
+ /* tên điểm */
+ cnt.forEach((e,n)=>{if(e.c===1&&!ctl.has(n))W('p.once',esc(n),K(e.tb),e.ln)});
+ ctl.forEach((c,n)=>{if(!cnt.has(n))W('p.unused',esc(n),c.ln)});
+ const g=new Map();new Set([...cnt.keys(),...ctl.keys()]).forEach(n=>{const k=nz(n);if(!g.has(k))g.set(k,[]);g.get(k).push(n)});
+ g.forEach(l=>{for(let i=1;i<l.length;i++)W('p.sim',esc(l[0]),esc(l[i]))});
+ return out}
+function preHtml(I){let m;try{m=pre(I)}catch(e){return''}
+ return m.length?'<p class="ln"><b>'+t('q.pre')+'</b></p>'+m.map(x=>'<p class="ln warn">• '+t(x.k,...x.a)+'</p>').join(''):''}
+function chkHtml(S){
+ const P=S.I.P,f=(v,d)=>v.toFixed(d),df=S.m-S.nu,g0=P.g;
+ const chi=df*S.s0*S.s0/(g0*g0),c=2/(9*df),lim=df*Math.pow(1-c+1.645*Math.sqrt(c),3),okG=chi<=lim;   /* χ² 95% (xấp xỉ Wilson–Hilferty) */
+ const it=[];
+ S.as.forEach(a=>it.push({tb:'w.ang',ln:a.ln,raw:a.raw,v:f(a.v,2)+'"',r:a.r,w:a.w,sug:a.sug==null?'-':dd(a.sug,2,1)}));
+ S.ds.forEach(d=>it.push({tb:'w.dis',ln:d.ln,raw:d.raw,v:f(d.v,3)+' m',r:d.r,w:d.w,sug:d.sug==null?'-':f(d.sug,3)}));
+ const th=okG?3.29:2.5,sus=it.filter(x=>x.w>=th).sort((x,y)=>y.w-x.w).slice(0,10),low=it.filter(x=>x.r<0.1);
+ let h='<section class="card noprint"><h2>'+t('q.t')+'</h2>'+preHtml(S.I);
+ h+='<p class="ln"><b>'+t('q.snoop')+'</b></p><p class="ln">'+t('q.glob',f(S.s0,2),f(g0,2),f(chi,2),f(lim,2),df)+' <span class="'+(okG?'okc':'err')+'">'+t(okG?'q.gok':'q.gbad')+'</span></p>';
+ if(sus.length){
+  h+='<div class="sc"><table><tr>'+['#','q.h.tb','q.h.ln','q.h.dat','v','r','q.h.w','q.h.lvl','q.h.sug'].map(x=>'<th>'+(x.length>1?t(x):x)+'</th>').join('')+'</tr>'+
+   sus.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+t(x.tb)+'</td><td><b>'+x.ln+'</b></td><td>'+esc(x.raw)+'</td><td>'+x.v+'</td><td>'+f(x.r,2)+'</td><td>'+f(x.w,2)+'</td><td class="'+(x.w>=3.29?'err':'warn')+'">'+t(x.w>=3.29?'q.hi':'q.mid')+'</td><td>'+x.sug+'</td></tr>').join('')+'</table></div>'+
+   '<p class="hint">'+t('q.hint')+'</p>'}
+ else h+='<p class="ln okc">'+t('q.ok',th)+'</p>';
+ if(low.length){const lw=['w.ang','w.dis'].map(k=>{const l=low.filter(x=>x.tb===k).map(x=>x.ln);return l.length?t(k)+' ('+t('q.h.ln').toLowerCase()+' '+l.join(', ')+')':''}).filter(Boolean).join('; ');
+  h+='<p class="ln warn">'+t('q.lowr',lw)+'</p>'}
+ return h+'</section>'}
+
+function dd(sec,dec,trim){const f=Math.pow(10,dec);let t=Math.round(Math.abs(sec)*f);const D=Math.floor(t/(3600*f));t-=D*3600*f;const M=Math.floor(t/(60*f));t-=M*60*f;let x=(t/f).toFixed(dec);if(trim)x=String(parseFloat(x));return(sec<0?'-':'')+D+' '+M+' '+x}
+function show(S,q){
+ const f=(v,d)=>v.toFixed(d),P=S.I.P,nj=P.pj!=='n';
+ const T=(h,b,w)=>'<div class="sc"><table'+(w?' class="w"':'')+'><tr>'+h.map(x=>x.t?'<th colspan="'+x.c+'">'+x.t+'</th>':'<th>'+x+'</th>').join('')+'</tr>'+b.map(r=>'<tr>'+r.map(x=>'<td>'+esc(x)+'</td>').join('')+'</tr>').join('')+'</table></div>';
+ const cj={n:'None',g:'1-Gauss',u3:'0.9999',u6:'0.9996'}[P.pj],L=(a,b)=>'<td class="l">'+a+'</td><td>'+b+'</td>';
+ let h='<div id="rep" class="rep"><h1>'+t('r.mb')+'</h1><p class="ln"><b><i>'+t('project')+'</i></b>: '+esc(P.pr)+'</p><p class="ln"><b><u>'+t('r.params')+'</u></b></p>'+
+  '<div class="sc"><table><tr>'+L(t('r.nctl'),S.I.ctl.length)+L(t('r.ncor'),cj)+'</tr><tr>'+L(t('r.nnew'),S.n)+L(t('r.aerr'),P.g+'"')+'</tr><tr>'+L(t('r.nd'),S.D.length)+L(t('r.derr'),'('+P.a+'+'+P.b+'*D km)mm')+'</tr><tr>'+L(t('r.na'),S.A.length)+L(t('r.az'),0)+'</tr></table></div>';
+ h+='<h3>'+t('r.ctl')+'</h3>'+T([t('h.name'),t('r.px'),t('r.py')],S.I.ctl.map(c=>[c.n,f(c.x,3),f(c.y,3)]));
+ h+=khepHtml(S.I);
+ h+='<h3>'+t('r.dsides')+'</h3>'+T([{t:t('t.side'),c:2},t('t.dist'),t('t.ell'),t('t.cc'),t('t.v'),t('t.adj')],S.ds.map(d=>[d.na,d.nb,f(d.s0,3),P.h?f(d.e,3):'',nj?f(d.k,3):'',f(d.v,3),f(d.s,3)]),1);
+ h+='<h3>'+t('r.dangs')+'</h3>'+T([t('h.left'),t('h.mid'),t('h.right'),t('t.angb'),t('t.ccmp'),t('t.v'),t('t.anga')],S.as.map(a=>[a.t,a.g,a.p,dd(a.s0,2,1),f(a.c,2),f(a.v,2),dd(a.b,2,0)]),1);
+ h+='<h3>'+t('r.rel')+'</h3>'+T([{t:t('t.side'),c:2},'Ms','Ms/S',t('t.azm'),'Ma(")'],S.ds.map(d=>[d.na,d.nb,f(d.ms,3),d.ms>0?'1/'+Math.round(d.s/d.ms):'-',dd(d.z*648000/PI,1,0),f(d.ma,1)]),1);
+ h+='<h3>'+t('r.adjc')+'</h3>'+T([t('h.name'),t('r.px'),t('r.py'),'Mx','My','Mp'],S.pts.map(p=>[p.n,f(p.x,3),f(p.y,3),f(p.Mx,3),f(p.My,3),f(p.Mp,3)]),1);
+ h+='<p class="ln">'+t('r.s0',f(S.s0,1))+'</p><p class="ln">'+t('r.iter',S.it.reduce((a,r)=>a+r.length,0),S.it.map(r=>r.map(v=>f(v,3)).join(' → ')).join(' | '))+'</p><p class="ln">'+t('r.weak',esc(S.mpn),f(S.mpm,3))+'</p>'+
+  (S.msN?'<p class="ln">'+t('r.weaklen',esc(S.msN),Math.round(S.msMin))+'</p>':'')+(S.maN?'<p class="ln">'+t('r.weakaz',esc(S.maN),f(S.maMax,1))+'</p>':'')+'</div>';
+ const csv=[t('csv.pt')+'\tX\tY\tMx\tMy\tMp'].concat(S.pts.map(p=>[p.n,f(p.x,3),f(p.y,3),f(p.Mx,3),f(p.My,3),f(p.Mp,3)].join('\t'))).join('\n');
+ h+=chkHtml(S);
+ h+='<section class="card noprint"><div class="bar"><button class="main" data-r="1">'+t('b.copy')+'</button><button data-p="1">'+t('b.print')+'</button><button data-w="1">'+t('b.word')+'</button></div>'+
+  '<h2>'+t('o.coord')+'</h2><textarea id="o1" readonly>'+esc(csv)+'</textarea><p class="bar"><button data-c="o1">'+t('o.cpc')+'</button></p>'+
+  '<p class="hint">'+t('dof',S.m-S.nu)+'</p></section>';
+ $('res').innerHTML=h;
+ const R=$('res');
+ R.querySelectorAll('button[data-c]').forEach(b=>b.onclick=()=>{const t=$(b.dataset.c);t.select();try{navigator.clipboard.writeText(t.value).catch(()=>document.execCommand('copy'))}catch(e){document.execCommand('copy')}});
+ R.querySelector('[data-r]').onclick=()=>{const r=document.createRange();r.selectNode($('rep'));const g=getSelection();g.removeAllRanges();g.addRange(r);try{document.execCommand('copy')}catch(e){}g.removeAllRanges()};
+ R.querySelector('[data-p]').onclick=()=>window.print();R.querySelector('[data-w]').onclick=()=>wordDoc();
+ if(!q)R.scrollIntoView({behavior:'smooth'})}
+
+function wordDoc(rid,fn){rid=rid||'rep';fn=fn||'BinhSaiLuoiMatBang.doc';const css='body{font-family:"Times New Roman";font-size:12pt}h1{text-align:center;font-size:18pt}h3{text-align:center;font-size:12pt}table{border-collapse:collapse;margin:0 auto}table.w{width:100%}td,th{border:1px solid #000;padding:2px 6px;text-align:center;font-weight:normal}td.l{text-align:left}p{margin:2pt 0}';
+ const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40" lang="'+lang+'"><head><meta charset="utf-8"><title>'+esc(t('doc.title'))+'</title><style>'+css+'</style></head><body>'+$(rid).innerHTML.replace(/<table([^>]*)>/g,(m,at)=>/class="lay"/.test(at)?m:/class="w"/.test(at)?'<table align="center"'+at+'>':'<table align="center" width="65%"'+at+'>')+'</body></html>';
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff',html],{type:'application/msword'}));a.download=fn;document.body.appendChild(a);a.click();a.remove()}
+const GC={c:{t:'g.ctl',h:['h.name','X','Y'],n:6},g:{t:'g.ang',h:['h.left','h.mid','h.right','h.deg','h.min','h.sec'],n:10},d:{t:'g.dis',h:['h.from','h.to','h.len'],n:10},
+ hg:{t:'g.ctl',h:['h.name','h.elev'],n:6},ht:{t:'g.ht',h:['h.from','h.to','h.dh','h.lenkm'],n:10}};
+const NUMC={c:[1,2],g:[3,4,5],d:[2],hg:[1],ht:[2,3]};
+const rowH=(id,v)=>'<tr><td class="rn"></td>'+GC[id].h.map((_,j)=>'<td><input type="text" autocomplete="off" autocapitalize="off" spellcheck="false"'+(NUMC[id].includes(j)?' inputmode="decimal"':'')+' value="'+esc(v&&v[j]||'').replace(/"/g,'&quot;')+'"></td>').join('')+'</tr>';
+function fill(id,data){const n=Math.max(GC[id].n,data.length+2);let b='';for(let i=0;i<n;i++)b+=rowH(id,data[i]);$(id).querySelector('tbody').innerHTML=b}
+function G(id){return[...$(id).querySelectorAll('tbody tr')].map((tr,k)=>{const r=[...tr.querySelectorAll('input')].map(i=>i.value.trim());r.ln=k+1;return r}).filter(r=>r.some(v=>v!==''))}
+function build(id){const c=GC[id],cols=c.h.length;
+ $(id).innerHTML='<div class="sc"><table class="gr"><colgroup><col style="width:2.4em"><col span="'+cols+'"></colgroup><thead><tr><th class="tt" colspan="'+(cols+1)+'" data-i="'+c.t+'"></th></tr><tr><th class="hd">#</th>'+c.h.map(x=>'<th class="hd" data-i="'+x+'"></th>').join('')+'</tr></thead><tbody></tbody></table></div><div class="bar"><button type="button" data-i="add5"></button></div>';
+ fill(id,[]);const T=$(id).querySelector('table'),B=()=>T.querySelector('tbody');
+ $(id).querySelector('button').onclick=()=>B().insertAdjacentHTML('beforeend',rowH(id).repeat(5));
+ T.addEventListener('paste',e=>{const t=(e.clipboardData||window.clipboardData).getData('text');if(!t||e.target.tagName!=='INPUT')return;e.preventDefault();
+  const a=[...T.querySelectorAll('input')].indexOf(e.target),r0=Math.floor(a/cols),c0=a%cols,L=t.replace(/\r/g,'').split('\n');if(L.length&&L[L.length-1]==='')L.pop();
+  L.forEach((ln,i)=>{const cells=ln.indexOf('\t')>=0?ln.split('\t'):ln.trim().split(/\s+/);
+   let tr=B().querySelectorAll('tr')[r0+i];if(!tr){B().insertAdjacentHTML('beforeend',rowH(id));tr=B().querySelectorAll('tr')[r0+i]}
+   const inp=tr.querySelectorAll('input');cells.forEach((v,j)=>{if(c0+j<cols)inp[c0+j].value=v.trim()})})});
+ T.addEventListener('keydown',e=>{if(e.key!=='Enter'||e.target.tagName!=='INPUT')return;e.preventDefault();
+  const a=[...T.querySelectorAll('input')].indexOf(e.target);if(a+cols>=T.querySelectorAll('input').length)B().insertAdjacentHTML('beforeend',rowH(id));
+  T.querySelectorAll('input')[a+cols].focus()})}
+['c','g','d','hg','ht'].forEach(build);
+const LR={};
+function clr(id){LR[id]=null;$(id).innerHTML=''}
+function errOut(id,e,x){const f=()=>{$(id).innerHTML='<section class="card"><p class="err">'+esc(e.k?t(e.k,...e.a):e.message)+'</p>'+(x?x():'')+'</section>'};LR[id]=f;f()}
+$('go').onclick=()=>{let I;try{I=read();const S=solve(I);LR.res=q=>show(S,q);show(S)}catch(e){errOut('res',e,I&&(()=>preHtml(I)))}};
+$('cl').onclick=()=>{['c','g','d'].forEach(i=>fill(i,[]));clr('res')};
+$('ex').onclick=()=>{fill('c',[['A','1000.000','1000.000'],['B','1000.000','1100.000']]);
+ fill('g',[['P','A','B','60','0','5'],['A','B','P','59','59','58']]);fill('d',[['A','P','100.003'],['B','P','99.998']]);
+ $('pa').value=2;$('pb').value=2;$('pg').value=5;$('ph').value=0;$('pj').value='n';$('cc').checked=false;clr('res')};
+/* ===== BÌNH SAI LƯỚI ĐỘ CAO (chuyển từ VBA, phương pháp gián tiếp, p = 1/L) ===== */
+const HS={1:2,2:4,3:10,4:20},fx=(v,d)=>{if(Math.abs(v)<0.5*Math.pow(10,-d))v=0;return v.toFixed(d)};
+function solveH(){
+ const cap=parseInt($('hcap').value)||3,gs=G('hg'),ts=G('ht');
+ if(!gs.length)throw err('e.noctl');
+ if(!ts.length)throw err('e.nomeas');
+ const nm=[],H=[],kn=[],mp=new Map();
+ gs.forEach(r=>{if(!r[0])throw err('e.ctlname',r.join(' '));const k=r[0].toLowerCase();
+  if(mp.has(k))throw err('e.ctldup',r[0]);
+  if(r[1]===''||r[1]===undefined)throw err('e.ctlh',r[0]);
+  mp.set(k,nm.length);nm.push(r[0]);H.push(num(r[1]));kn.push(true)});
+ const nK=nm.length,get=s=>{const k=s.toLowerCase();if(!mp.has(k)){mp.set(k,nm.length);nm.push(s);H.push(0);kn.push(false)}return mp.get(k)};
+ const O=ts.map((r,i)=>{if(!r[0]||!r[1])throw err('e.rname',i+1);
+  if(r[2]===''||r[3]===''||r[2]===undefined||r[3]===undefined)throw err('e.rmiss',r[0],r[1]);
+  const L=num(r[3]);if(!(L>0))throw err('e.rlen',r[0],r[1]);
+  return{i:get(r[0]),j:get(r[1]),h:num(r[2]),L}});
+ const nP=nm.length,nO=O.length,ni=[];let nN=0;
+ for(let i=0;i<nP;i++)ni[i]=kn[i]?-1:nN++;
+ if(nN===0)throw err('e.nonewh');
+ if(nO<nN)throw err('e.fewobs');
+ /* cao độ gần đúng theo cây đường ngắn nhất */
+ const vis=kn.slice(),dist=new Array(nP).fill(0),par=new Array(nP).fill(-1),tree=new Array(nO).fill(false);
+ for(;;){let best=Infinity,bk=-1,nd=-1,fr=-1;
+  O.forEach((o,k)=>{if(vis[o.i]&&!vis[o.j]){const c=dist[o.i]+o.L;if(c<best){best=c;bk=k;nd=o.j;fr=o.i}}
+   else if(vis[o.j]&&!vis[o.i]){const c=dist[o.j]+o.L;if(c<best){best=c;bk=k;nd=o.i;fr=o.j}}});
+  if(bk<0)break;vis[nd]=true;dist[nd]=best;par[nd]=fr;tree[bk]=true;
+  H[nd]=nd===O[bk].j?H[fr]+O[bk].h:H[fr]-O[bk].h}
+ for(let i=0;i<nP;i++)if(!vis[i])throw err('e.unconn',nm[i]);
+ /* hệ phương trình chuẩn */
+ const N=Array.from({length:nN},()=>new Array(nN).fill(0)),bv=new Array(nN).fill(0),lk=[];
+ O.forEach((o,k)=>{const ci=ni[o.i],cj=ni[o.j],p=1/o.L,l=H[o.j]-H[o.i]-o.h;lk.push(l);
+  if(cj>=0){N[cj][cj]+=p;bv[cj]-=p*l}if(ci>=0){N[ci][ci]+=p;bv[ci]+=p*l}
+  if(ci>=0&&cj>=0){N[ci][cj]-=p;N[cj][ci]-=p}});
+ const Q=inv(N),x=Q.map(r=>r.reduce((s,v,j)=>s+v*bv[j],0));
+ let pvv=0;const V=O.map((o,k)=>{const ci=ni[o.i],cj=ni[o.j],v=(cj>=0?x[cj]:0)-(ci>=0?x[ci]:0)+lk[k];pvv+=v*v/o.L;return v});
+ const r=nO-nN,mu=r>0?Math.sqrt(pvv*1e6/r):0;
+ const M=O.map(o=>{const ci=ni[o.i],cj=ni[o.j];let q=0;if(cj>=0)q+=Q[cj][cj];if(ci>=0)q+=Q[ci][ci];if(ci>=0&&cj>=0)q-=2*Q[ci][cj];return mu*Math.sqrt(Math.max(q,0))});
+ const rd=n=>par[n]<0?nm[n]:rd(par[n])+'->'+nm[n],ru=n=>par[n]<0?nm[n]:nm[n]+'->'+ru(par[n]);
+ const cl=[];O.forEach((o,k)=>{if(tree[k])return;const f=H[o.i]+o.h-H[o.j],Lt=o.L+dist[o.i]+dist[o.j],lim=HS[cap]*Math.sqrt(Lt)/1000;
+  cl.push({route:rd(o.i)+'->'+ru(o.j),Lt,f,lim,bad:Math.abs(f)>lim})});
+ const pts=[];let wk=-1,mw=-1;
+ for(let i=0;i<nP;i++)if(!kn[i]){const m=mu*Math.sqrt(Q[ni[i]][ni[i]]);pts.push({n:nm[i],h0:H[i],v:x[ni[i]],h:H[i]+x[ni[i]],m});if(m>mw){mw=m;wk=i}}
+ return{nm,H,kn,nK,nN,nO,cap,O,V,M,cl,pts,mu,mw,wn:wk>=0?nm[wk]:''}}
+
+function showH(S,q){
+ const tb=(h,b)=>'<div class="sc"><table'+(h.length>5?' class="w"':'')+'><tr>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr>'+b.map(r=>'<tr>'+r.map((x,i)=>'<td'+(i===0&&h[0]!==t('l.stt')?' class="l"':'')+'>'+esc(x)+'</td>').join('')+'</tr>').join('')+'</table></div>';
+ const L=(a,b)=>'<td class="l">'+a+'</td><td>'+b+'</td>',P=($('hpn').value||'').trim();
+ let h='<div id="rep2" class="rep"><h1>'+t('d.t')+'</h1><p class="ln"><b><i>'+t('project')+'</i></b>: '+esc(P)+'</p><p class="ln"><b><u>'+t('r.params')+'</u></b></p>'+
+  '<div class="sc"><table><tr>'+L(t('r.nctl'),S.nK)+L(t('r.nnew'),S.nN)+'</tr><tr>'+L(t('d.nroutes'),S.nO)+L(t('d.cap'),S.cap)+'</tr></table></div>';
+ h+='<h3>'+t('d.init')+'</h3>'+tb([t('h.name'),t('h.elev')],S.nm.map((n,i)=>S.kn[i]?[n,fx(S.H[i],3)]:null).filter(Boolean));
+ h+='<h3>'+t('k.t')+'</h3>';
+ if(S.cl.length)S.cl.forEach(c=>{h+='<p class="ln">'+t('d.route',esc(c.route),fx(c.Lt,1),fx(c.f,3),fx(c.lim,3))+(c.bad?'<br><b class="err">'+t('d.warn').replace(/>/g,'&gt;')+'</b>':'')+'</p>'});
+ else h+='<p class="ln">'+t('d.nochk')+'</p>';
+ h+='<h3>'+t('d.shc')+'</h3>'+tb([t('d.rname'),t('h.dh'),t('d.vm'),t('d.dhb'),'Mh (mm)'],S.O.map((o,k)=>[S.nm[o.i]+' - '+S.nm[o.j],fx(o.h,3),fx(S.V[k],3),fx(o.h+S.V[k],3),fx(S.M[k],1)]));
+ h+='<h3>'+t('d.after')+'</h3>'+tb([t('h.name'),t('d.hb'),t('d.vm'),t('d.ha'),t('d.m')],S.pts.map(p=>[p.n,fx(p.h0,3),fx(p.v,3),fx(p.h,3),fx(p.m,1)]));
+ h+='<p class="ln">'+t('d.s0',fx(S.mu,1))+'</p><p class="ln">'+t('d.weak',esc(S.wn),fx(S.mw,1))+'</p></div>';
+ const csv=[t('csv.pt')+'\tH(m)\tSSTP(mm)'].concat(S.pts.map(p=>[p.n,fx(p.h,3),fx(p.m,1)].join('\t'))).join('\n');
+ h+='<section class="card noprint"><div class="bar"><button class="main" data-r="1">'+t('b.copy')+'</button><button data-p="1">'+t('b.print')+'</button><button data-w="1">'+t('b.word')+'</button></div>'+
+  '<h2>'+t('d.out')+'</h2><textarea id="o2" readonly>'+esc(csv)+'</textarea><p class="bar"><button data-c="o2">'+t('d.cph')+'</button></p><p class="hint">'+t('dof',S.nO-S.nN)+'</p></section>';
+ const R=$('hres');R.innerHTML=h;
+ R.querySelectorAll('button[data-c]').forEach(b=>b.onclick=()=>{const t=$(b.dataset.c);t.select();try{navigator.clipboard.writeText(t.value).catch(()=>document.execCommand('copy'))}catch(e){document.execCommand('copy')}});
+ R.querySelector('[data-r]').onclick=()=>{const r=document.createRange();r.selectNode($('rep2'));const g=getSelection();g.removeAllRanges();g.addRange(r);try{document.execCommand('copy')}catch(e){}g.removeAllRanges()};
+ R.querySelector('[data-p]').onclick=()=>window.print();R.querySelector('[data-w]').onclick=()=>wordDoc('rep2','BinhSaiLuoiDoCao.doc');
+ if(!q)R.scrollIntoView({behavior:'smooth'})}
+$('hgo').onclick=()=>{try{const S=solveH();LR.hres=q=>showH(S,q);showH(S)}catch(e){errOut('hres',e)}};
+$('hcl').onclick=()=>{['hg','ht'].forEach(i=>fill(i,[]));clr('hres')};
+$('hex').onclick=()=>{fill('hg',[['A','100.000'],['B','105.000']]);
+ fill('ht',[['A','P','2.500','2'],['P','Q','1.200','1.5'],['Q','B','1.302','2'],['A','Q','3.705','3'],['P','B','2.503','2.5']]);
+ $('hcap').value='3';clr('hres')};
+/* ===== QUAN TRẮC LÚN: bình sai nhiều chu kỳ (p = 1/số trạm) + báo cáo ===== */
+Object.assign(I18N.vi,{'ls.t':`Quan trắc lún`,'ls.d':`Bình sai nhiều chu kỳ, kiểm định mốc chuẩn, báo cáo độ lún`,'ls.h1':`Bình sai & báo cáo quan trắc lún`,
+'l.gb':`Mốc chuẩn (cơ sở)`,'l.gc':`Chu kỳ đo`,'l.gtt':`Tuyến đo theo chu kỳ`,'l.gx':`Tọa độ mốc (tuỳ chọn)`,'l.cy':`Chu kỳ`,'l.date':`Ngày đo`,'l.note':`Tải trọng / ghi chú`,'l.nst':`Số trạm`,
+'hint.ls':`Mốc chuẩn: cao độ khởi tính (chu kỳ đầu). Tuyến đo: mỗi dòng một chênh cao, ghi rõ chu kỳ và số trạm (trọng số p = 1/số trạm). Tuyến nối giữa hai mốc chuẩn dùng cho lưới mốc chuẩn; các tuyến còn lại là lưới quan trắc. Tọa độ chỉ cần khi muốn tính độ lún lệch tương đối.`,
+'l.pr':`Công trình`,'l.loc':`Địa điểm`,'l.mode':`Phương án chọn gốc`,'l.m1':`Giữ cố định độ cao mốc cơ sở`,'l.m2':`Bình sai tự do rồi kiểm định ổn định mốc gốc`,'l.cap':`Cấp đo lún`,'l.tk':`Độ ổn định mốc chuẩn (hệ số t)`,'l.lim':`Độ lệch giới hạn mốc chuẩn, mm (trống = tự tính)`,'l.sgh':`Độ lún giới hạn cho phép (mm)`,'l.rel':`Lún lệch tương đối giới hạn (‰)`,'l.rc':`Chu kỳ báo cáo (trống = cuối)`,
+'l.rep':`BÁO CÁO KẾT QUẢ QUAN TRẮC LÚN`,'l.cyc':`Chu kỳ {0}`,'l.1':`1. Đánh giá độ ổn định mốc chuẩn`,'l.1f':`Phương án giữ cố định: các mốc chuẩn được giữ nguyên độ cao khởi tính khi bình sai lưới quan trắc.`,
+'l.t3':`Bảng tổng hợp độ cao mốc chuẩn giữa các chu kỳ (m)`,'l.t4':`Kết quả đánh giá độ ổn định mốc chuẩn`,'l.2':`2. Kết quả quan trắc lún chu kỳ {0}`,'l.3':`3. Kết luận`,'l.4':`Phụ lục: kết quả bình sai từng chu kỳ`,
+'l.hc':`Độ cao chu kỳ {0} (m)`,'l.ds':`Độ lún {0}-{1} (mm)`,'l.sp':`Tốc độ (mm/tháng)`,'l.dev':`Độ lệch (mm)`,'l.dl':`Giới hạn (mm)`,'l.st':`Đánh giá`,'l.ok':`Ổn định`,'l.bad':`Không ổn định (loại)`,
+'l.avg':`Độ lún trung bình`,'l.max':`Độ lún lớn nhất`,'l.maxp':`Mốc lún lớn nhất`,'l.min':`Độ lún nhỏ nhất`,'l.minp':`Mốc lún nhỏ nhất`,'l.avgv':`Tốc độ lún trung bình (mm/tháng)`,
+'l.rel2':`Độ lún lệch tương đối lớn nhất: {0} giữa {1} và {2} (L = {3} m), giới hạn {4}‰`,'l.c1':`Độ lún lớn nhất {0} mm {1} [Sgh] = {2} mm.`,'l.lt':`nhỏ hơn`,'l.gt':`VƯỢT`,'l.c2':`Độ lún lệch tương đối lớn nhất {0}‰ {1} giới hạn {2}‰.`,
+'l.cl':`Tuyến {0} (n = {1} trạm): fh = {2} mm, cho phép {3} mm`,'l.ach':`Chu kỳ {0}, ngày {1}`,'l.pt':`Điểm mới`,'l.ns':`Số trạm`,'l.no':`Trị đo`,'l.fh':`fh lớn nhất / cho phép (mm)`,'l.mhm':`mH lớn nhất (mm)`,'l.fixed':`Mốc chuẩn cố định: {0}`,
+'l.e.row':`Dòng {0} (tuyến đo): thiếu chu kỳ, điểm đầu/cuối, chênh cao hoặc số trạm (>0).`,'l.e.nocy':`Chưa nhập tuyến đo.`,'l.e.allunst':`Chu kỳ {0}: tất cả mốc chuẩn đều không ổn định, không còn gốc để bình sai.`,'l.nodata':`Không có mốc nào có đủ số liệu ở chu kỳ báo cáo và chu kỳ đầu.`,'l.csv':`Điểm\tH(m)`});
+Object.assign(I18N.en,{'ls.t':`Settlement monitoring`,'ls.d':`Multi-epoch adjustment, reference-point stability test, settlement report`,'ls.h1':`Settlement monitoring: adjustment & report`,
+'l.gb':`Reference benchmarks`,'l.gc':`Epochs`,'l.gtt':`Levelling lines by epoch`,'l.gx':`Point coordinates (optional)`,'l.cy':`Epoch`,'l.date':`Date`,'l.note':`Load / note`,'l.nst':`Stations`,
+'hint.ls':`Benchmarks: initial heights (first epoch). Lines: one height difference per row with its epoch and number of stations (weight p = 1/stations). Lines between two benchmarks form the reference network; the others form the monitoring network. Coordinates are only needed for the relative differential settlement.`,
+'l.pr':`Structure`,'l.loc':`Location`,'l.mode':`Datum option`,'l.m1':`Hold reference benchmarks fixed`,'l.m2':`Free adjustment, then test benchmark stability`,'l.cap':`Class`,'l.tk':`Benchmark stability factor (t)`,'l.lim':`Benchmark limit deviation, mm (blank = auto)`,'l.sgh':`Allowable settlement limit (mm)`,'l.rel':`Relative differential limit (‰)`,'l.rc':`Report epoch (blank = last)`,
+'l.rep':`SETTLEMENT MONITORING REPORT`,'l.cyc':`Epoch {0}`,'l.1':`1. Reference benchmark stability`,'l.1f':`Fixed option: reference benchmarks are held at their initial heights in the monitoring network adjustment.`,
+'l.t3':`Benchmark heights by epoch (m)`,'l.t4':`Benchmark stability assessment`,'l.2':`2. Settlement results, epoch {0}`,'l.3':`3. Conclusions`,'l.4':`Appendix: adjustment results per epoch`,
+'l.hc':`Height, epoch {0} (m)`,'l.ds':`Settlement {0}-{1} (mm)`,'l.sp':`Rate (mm/month)`,'l.dev':`Deviation (mm)`,'l.dl':`Limit (mm)`,'l.st':`Result`,'l.ok':`Stable`,'l.bad':`Unstable (excluded)`,
+'l.avg':`Mean settlement`,'l.max':`Max settlement`,'l.maxp':`Point of max settlement`,'l.min':`Min settlement`,'l.minp':`Point of min settlement`,'l.avgv':`Mean rate (mm/month)`,
+'l.rel2':`Max relative differential settlement: {0} between {1} and {2} (L = {3} m), limit {4}‰`,'l.c1':`Max settlement {0} mm is {1} [Sgh] = {2} mm.`,'l.lt':`below`,'l.gt':`ABOVE`,'l.c2':`Max relative differential settlement {0}‰ is {1} the limit {2}‰.`,
+'l.cl':`Line {0} (n = {1} stations): fh = {2} mm, allowed {3} mm`,'l.ach':`Epoch {0}, {1}`,'l.pt':`New points`,'l.ns':`Stations`,'l.no':`Observations`,'l.fh':`max fh / allowed (mm)`,'l.mhm':`max mH (mm)`,'l.fixed':`Fixed benchmarks: {0}`,
+'l.e.row':`Row {0} (lines): missing epoch, from/to point, height difference or stations (>0).`,'l.e.nocy':`No levelling lines entered.`,'l.e.allunst':`Epoch {0}: all benchmarks are unstable, no datum left.`,'l.nodata':`No point has data in both the report epoch and the first epoch.`,'l.csv':`Point\tH(m)`});
+Object.assign(GC,{lb:{t:'l.gb',h:['h.name','h.elev'],n:4},lc:{t:'l.gc',h:['l.cy','l.date','l.note'],n:4},lx:{t:'l.gx',h:['h.name','X','Y'],n:4}});
+Object.assign(NUMC,{lb:[1],lc:[0],lx:[1,2]});
+['lb','lc','lx'].forEach(build);
+/* Bảng tuyến đo: mỗi chu kỳ (nhập ở bảng "Chu kỳ đo") có một bảng riêng, không cần cột chu kỳ */
+const LT=$('lt'),ltDivs=()=>[...LT.querySelectorAll(':scope>div[data-r]')],ltById=c=>{const d=ltDivs().find(d=>+d.dataset.c===c);return d&&d.id};
+function ltSync(){
+ const rows=[...$('lc').querySelectorAll('tbody tr')].map(tr=>parseInt(tr.querySelector('input').value));
+ ltDivs().forEach(d=>{const k=+d.dataset.r;if(!(rows[k]>0)){if(G(d.id).length){d.dataset.c='';const th=d.querySelector('th.tt');th.dataset.a='?';th.textContent=t('l.gtc','?')}else d.remove()}});
+ rows.forEach((c,k)=>{if(!(c>0))return;let d=LT.querySelector(':scope>div[data-r="'+k+'"]');
+  if(!d){d=document.createElement('div');d.id='lt_'+k;d.dataset.r=k;GC[d.id]={t:'l.gtc',h:['h.from','h.to','h.dh','l.nst'],n:6};NUMC[d.id]=[2,3];LT.appendChild(d);build(d.id)}
+  d.dataset.c=c;const th=d.querySelector('th.tt');th.dataset.a=c;th.textContent=t('l.gtc',c)});
+ ltDivs().sort((x,y)=>x.dataset.r-y.dataset.r).forEach(d=>LT.appendChild(d));
+ LT.querySelector(':scope>p.hint').hidden=ltDivs().length>0}
+LT.innerHTML='<p class="hint" data-i="l.ltnone"></p>';
+$('lc').addEventListener('input',ltSync);$('lc').addEventListener('change',ltSync);$('lc').addEventListener('paste',ltSync);
+const lcDef=()=>{fill('lc',[['1','','']]);ltSync()};lcDef();
+let LN=[];
+const pd=s=>{const m=String(s||'').match(/(\d{1,4})[\/.\-](\d{1,2})[\/.\-](\d{1,4})/);if(!m)return null;let y,d;if(m[1].length===4){y=+m[1];d=+m[3]}else{d=+m[1];y=+m[3];if(y<100)y+=2000}return Date.UTC(y,+m[2]-1,d)/864e5};
+/* Bình sai gián tiếp 1 chu kỳ. fixed[i]: điểm gốc; free: bình sai tự do (ràng buộc tổng số hiệu chỉnh khớp độ cao tham chiếu Hr) */
+function lAdj(O,P,fixed,Hr,free,a,mn){
+ const used=new Array(P).fill(false);O.forEach(o=>{used[o.i]=used[o.j]=true});
+ let vis=fixed.slice();if(free){const f=used.indexOf(true);vis=vis.map((_,i)=>i===f)}
+ const Ht=Hr.slice(),dist=new Array(P).fill(0),par=new Array(P).fill(-1),tree=new Array(O.length).fill(false);
+ for(;;){let best=Infinity,bk=-1,nd=-1,fr=-1;
+  O.forEach((o,k)=>{if(vis[o.i]&&!vis[o.j]){const c=dist[o.i]+o.n;if(c<best){best=c;bk=k;nd=o.j;fr=o.i}}else if(vis[o.j]&&!vis[o.i]){const c=dist[o.j]+o.n;if(c<best){best=c;bk=k;nd=o.i;fr=o.j}}});
+  if(bk<0)break;vis[nd]=true;dist[nd]=best;par[nd]=fr;tree[bk]=true;Ht[nd]=nd===O[bk].j?Ht[fr]+O[bk].h:Ht[fr]-O[bk].h}
+ for(let i=0;i<P;i++)if(used[i]&&!vis[i])throw err('e.unconn',LN[i]);
+ const ni=[];let nN=0;for(let i=0;i<P;i++)ni[i]=(used[i]&&!fixed[i])?nN++:-1;
+ const chain=n=>{const c=[];for(let x=n;x>=0;x=par[x])c.unshift(x);return c};
+ const cl0=[];O.forEach((o,k)=>{if(tree[k])return;const f=(Ht[o.i]+o.h-Ht[o.j])*1000,ci0=chain(o.i),cj0=chain(o.j);let q=0;while(q<ci0.length&&q<cj0.length&&ci0[q]===cj0[q])q++;
+  const Lt=o.n+dist[o.i]+dist[o.j]-(q>0?2*dist[ci0[q-1]]:0),lim=a*Math.sqrt(Lt),pt=(q>0?ci0.slice(q-1).concat(cj0.slice(q-1).reverse()):ci0.concat(cj0.reverse())).map(x=>LN[x]);
+  cl0.push({route:LN[o.i]+'->'+LN[o.j],path:pt,Lt,f,lim,bad:Math.abs(f)>lim})});
+ /* tuyến đo = dãy trị đo liên tiếp (điểm cuối trạm trước = điểm đầu trạm sau); nếu mọi tuyến đều khép (về cùng điểm hoặc giữa 2 điểm gốc) thì báo cáo sai số khép theo từng tuyến, ngược lại dùng các vòng khép của lưới */
+ const runs=[];let cur=null;O.forEach((o,k)=>{if(cur&&O[k-1].j===o.i)cur.push(k);else{cur=[k];runs.push(cur)}});
+ const rl=[];let okR=runs.length>0;
+ runs.forEach(rn=>{const a0=O[rn[0]].i,b0=O[rn[rn.length-1]].j;if(!(a0===b0||(fixed[a0]&&fixed[b0]))){okR=false;return}
+  const sh=rn.reduce((q,k)=>q+O[k].h,0),f=(sh-(Hr[b0]-Hr[a0]))*1000,Lt=rn.reduce((q,k)=>q+O[k].n,0),lim=a*Math.sqrt(Lt);
+  rl.push({route:LN[a0]+'->'+LN[b0],path:[LN[a0]].concat(rn.map(k=>LN[O[k].j])),Lt,f,lim,bad:Math.abs(f)>lim})});
+ const cl=okR&&rl.length?rl:cl0;
+ const nst=O.reduce((s,o)=>s+o.n,0),H=Ht.slice(),m=new Array(P).fill(0);
+ if(nN===0)return{H,m,used,cl,mu:0,mw:0,nN:0,nO:O.length,nst,O,V:O.map(()=>0),M:O.map(()=>0),free,fixed};
+ const D=nN+(free?1:0),N=Array.from({length:D},()=>new Array(D).fill(0)),b=new Array(D).fill(0),lk=[];
+ O.forEach(o=>{const ci=ni[o.i],cj=ni[o.j],p=1/o.n,l=Ht[o.j]-Ht[o.i]-o.h;lk.push(l);
+  if(cj>=0){N[cj][cj]+=p;b[cj]-=p*l}if(ci>=0){N[ci][ci]+=p;b[ci]+=p*l}if(ci>=0&&cj>=0){N[ci][cj]-=p;N[cj][ci]-=p}});
+ if(free){for(let i=0;i<nN;i++){N[i][nN]=1;N[nN][i]=1}let sm=0;for(let i=0;i<P;i++)if(ni[i]>=0)sm+=Hr[i]-Ht[i];b[nN]=sm}
+ const Q=inv(N),x=Q.map(r=>r.reduce((s,v,j)=>s+v*b[j],0));
+ let pvv=0;const V=[];O.forEach((o,k)=>{const ci=ni[o.i],cj=ni[o.j],v=(cj>=0?x[cj]:0)-(ci>=0?x[ci]:0)+lk[k];pvv+=v*v/o.n;V.push(v*1000)});
+ const r=O.length-(free?nN-1:nN),mu=r>0?Math.sqrt(pvv*1e6/r):mn;let mw=0;
+ const M=O.map(o=>{const ci=ni[o.i],cj=ni[o.j];let q=0;if(cj>=0)q+=Q[cj][cj];if(ci>=0)q+=Q[ci][ci];if(ci>=0&&cj>=0)q-=2*Q[ci][cj];return mu*Math.sqrt(Math.max(q,0))});
+ for(let i=0;i<P;i++)if(ni[i]>=0){H[i]=Ht[i]+x[ni[i]];m[i]=mu*Math.sqrt(Math.max(Q[ni[i]][ni[i]],0));if(m[i]>mw)mw=m[i]}
+ return{H,m,used,cl,mu,mw,nN,nO:O.length,nst,O,V,M,free,fixed}}
+function lSolve(){
+ const mode=$('lmd').value,cap=$('lcp').value,tk=num($('ltk').value||2),aO=cap==='1'?0.3:0.5,mnO=cap==='1'?0.15:0.25,hcs=cap==='1'?0.32:0.63,lm=$('llm').value.trim(),lim=lm?num(lm):tk*Math.SQRT2*hcs;
+ const bm=G('lb').map(r=>{if(!r[0]||r[1]===''||r[1]===undefined)throw err('e.ctlh',r[0]||'?');return{n:r[0],h:num(r[1])}});
+ if(!bm.length)throw err('e.noctl');
+ LN=bm.map(b=>b.n);const nb=LN.length,mp=new Map(LN.map((n,i)=>[n.toLowerCase(),i])),Hr=bm.map(b=>b.h),
+  get=s=>{const k=s.toLowerCase();if(!mp.has(k)){mp.set(k,LN.length);LN.push(s)}return mp.get(k)};
+ const R=ltDivs().flatMap(d=>{const c=+d.dataset.c;return G(d.id).map(r=>{const ln=r.ln+' ('+(c>0?t('l.cyc',c):'?')+')';if(!(c>0)||!r[0]||!r[1]||!r[2]||!r[3])throw err('l.e.row',ln);const n=num(r[3]);if(!(n>0))throw err('l.e.row',ln);return{c,i:get(r[0]),j:get(r[1]),h:num(r[2]),n}})});
+ if(!R.length)throw err('l.e.nocy');
+ const P=LN.length;while(Hr.length<P)Hr.push(0);
+ const dt={};G('lc').forEach(r=>{const c=parseInt(r[0]);if(c>0)dt[c]={d:pd(r[1]),s:r[1]||''}});
+ const xy=new Map();G('lx').forEach(r=>{if(r[0]&&r[1]&&r[2])xy.set(r[0].toLowerCase(),[num(r[1]),num(r[2])])});
+ const cys=[...new Set(R.map(o=>o.c))].sort((a,b)=>a-b);
+ const CY=cys.map((c,ci)=>{
+  const O=R.filter(o=>o.c===c),bo=O.filter(o=>o.i<nb&&o.j<nb),oo=O.filter(o=>!(o.i<nb&&o.j<nb)),cy={c,bt:null,bad:[]};
+  if(bo.length){let S=[...new Set(bo.flatMap(o=>[o.i,o.j]))];
+   for(let it=0;;it++){const ln=bo.filter(o=>S.includes(o.i)&&S.includes(o.j));if(S.length<2||!ln.length)break;
+    let res;try{res=lAdj(ln,P,new Array(P).fill(false),Hr,true,0.3,0.15)}catch(e){if(it===0)throw e;break}
+    if(it===0)cy.bt=res;if(mode!=='free'||ci===0)break;
+    let w=-1,wv=0;S.forEach((i,k)=>{const d=Math.abs(res.H[i]-Hr[i])*1000;if(d>lim&&d>wv){wv=d;w=k}});
+    if(w<0)break;cy.bad.push(S[w]);S=S.filter((_,k)=>k!==w)}}
+  const F=new Array(P).fill(false);for(let i=0;i<nb;i++)F[i]=!cy.bad.includes(i);
+  if(!F.some(Boolean))throw err('l.e.allunst',c);
+  cy.F=F;cy.res=oo.length?lAdj(oo,P,F,Hr,false,aO,mnO):null;return cy});
+ return{CY,cys,nb,N:LN.slice(),Hr,lim,mode,cap,dt,xy,aO}}
+function lShow(S,q){
+ const tb=(h,b)=>'<div class="sc"><table'+(h.length>5?' class="w"':'')+'><tr>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr>'+b.map(r=>'<tr>'+r.map((x,i)=>'<td'+(i===0&&h[0]!==t('l.stt')?' class="l"':'')+'>'+esc(x)+'</td>').join('')+'</tr>').join('')+'</table></div>';
+ const {CY,cys,nb,N,Hr,lim,mode,dt,xy}=S,ln=x=>'<p class="ln">'+x+'</p>',f5=v=>v==null?'-':fx(v,5);
+ const val=(k,i)=>{const r=CY[k].res;return r&&r.used[i]?r.H[i]:null};
+ let ri=cys.length-1;const rc=parseInt($('lrc').value);if(rc>0&&cys.indexOf(rc)>=0)ri=cys.indexOf(rc);
+ const cf=cys[0],ck=cys[ri],cp=ri>0?cys[ri-1]:null,dts=c=>{const x=dt[c];return x&&x.d!=null?x.d:null},dd=(a,b)=>{const x=dts(a),y=dts(b);return x==null||y==null?0:y-x};
+ const sp=(v,d)=>v==null||!(d>0)?'-':fx(v/d*30,2),d1=cp!=null?dd(cp,ck):0,d2=dd(cf,ck);
+ const rw=[];for(let i=nb;i<N.length;i++){const hf=val(0,i),hk=val(ri,i);if(hk===null||(ri>0&&hf===null))continue;const hp=ri>=2?val(ri-1,i):null;
+  rw.push({n:N[i],i,hf,hp,hk,s1:ri>=1?(hk-(ri>=2?hp:hf))*1000:null,s2:ri>=2&&hf!==null?(hk-hf)*1000:null})}
+ const P0=($('lpn').value||'').trim(),C0=($('lcn').value||'').trim(),L0=($('lda').value||'').trim();
+ let h='<div id="rep3" class="rep"><h1>'+t('l.rep')+'</h1><h3>('+t('l.cyc',ck)+')</h3>'+ln('<b><i>'+t('project')+'</i></b>: '+esc(P0))+ln('<b><i>'+t('l.pr')+'</i></b>: '+esc(C0))+ln('<b><i>'+t('l.loc')+'</i></b>: '+esc(L0));
+ h+='<h3>'+t('l.1')+'</h3>';
+ if(mode==='free'){
+  h+=tb([t('h.name')].concat(cys.map(c=>t('l.hc',c))),Array.from({length:nb},(_,i)=>[N[i]].concat(cys.map((c,k)=>k===0?f5(Hr[i]):(CY[k].bt&&CY[k].bt.used[i]?f5(CY[k].bt.H[i]):'-')))));
+  if(ri>=1){const cy=CY[ri],b=cy.bt;h+='<h3>'+t('l.t4')+'</h3>'+tb([t('h.name'),t('l.hc',cf),t('l.hc',ck),t('l.dev'),t('l.dl'),t('l.st')],Array.from({length:nb},(_,i)=>{const u=b&&b.used[i];return[N[i],f5(Hr[i]),u?f5(b.H[i]):'-',u?fx((b.H[i]-Hr[i])*1000,2):'-',fx(lim,2),cy.bad.includes(i)?t('l.bad'):t('l.ok')]}))}
+ }else h+=ln(t('l.1f'));
+ h+='<h3>'+t('l.2',ck)+'</h3>';
+ let csv=t('l.csv');
+ if(!rw.length)h+=ln('<b class="err">'+t('l.nodata')+'</b>');
+ else{const hs=[cf];if(ri>=2)hs.push(cp);if(ri>=1)hs.push(ck);const hd=[t('h.name')].concat(hs.map(c=>t('l.hc',c)));
+  if(ri>=1){hd.push(t('l.ds',ck,ri>=2?cp:cf),t('l.sp'));if(ri>=2)hd.push(t('l.ds',ck,cf),t('l.sp'))}
+  h+=tb(hd,rw.map(r=>{const a=[r.n,f5(r.hf)];if(ri>=2)a.push(f5(r.hp));if(ri>=1)a.push(f5(r.hk),fx(r.s1,2),sp(r.s1,d1));if(ri>=2)a.push(fx(r.s2,2),sp(r.s2,d2));return a}));
+  csv+='\t'+t('l.ds',ck,cf)+'\n'+rw.map(r=>[r.n,f5(r.hk),r.s2!=null?fx(r.s2,2):(r.s1!=null?fx(r.s1,2):'')].join('\t')).join('\n');
+  if(ri>=1){const ks=ri>=2?['s1','s2']:['s1'],st=k=>{const a=rw.filter(r=>r[k]!==null);if(!a.length)return null;let mx=a[0],mn=a[0],sum=0;a.forEach(r=>{sum+=r[k];if(r[k]<mx[k])mx=r;if(r[k]>mn[k])mn=r});return{avg:sum/a.length,mx:mx[k],mxn:mx.n,mn:mn[k],mnn:mn.n}},ss=ks.map(st),dl=[d1,d2];
+   h+=tb([''].concat(ks.map((k,j)=>t('l.ds',ck,k==='s1'?(ri>=2?cp:cf):cf))),[[t('l.avg')].concat(ss.map(x=>fx(x.avg,2))),[t('l.max')].concat(ss.map(x=>fx(x.mx,2))),[t('l.maxp')].concat(ss.map(x=>x.mxn)),[t('l.min')].concat(ss.map(x=>fx(x.mn,2))),[t('l.minp')].concat(ss.map(x=>x.mnn)),[t('l.avgv')].concat(ss.map((x,j)=>sp(x.avg,dl[j])))]);
+   const kk=ri>=2?'s2':'s1',sgh=num($('lsg').value||100),rl=num($('lrl').value||2),sx=ss[ks.indexOf(kk)];let best=null;
+   for(let a=0;a<rw.length;a++)for(let b=a+1;b<rw.length;b++){const A=xy.get(rw[a].n.toLowerCase()),B=xy.get(rw[b].n.toLowerCase());if(!A||!B||rw[a][kk]==null||rw[b][kk]==null)continue;const L=Math.hypot(A[0]-B[0],A[1]-B[1]);if(L>0){const v=Math.abs(rw[a][kk]-rw[b][kk])/L;if(!best||v>best.v)best={v,a:rw[a].n,b:rw[b].n,L}}}
+   h+='<h3>'+t('l.3')+'</h3>';
+   if(sx){const am=Math.abs(Math.min(sx.mx,0));h+=ln(t('l.c1',fx(am,2),am<=sgh?t('l.lt'):'<b class="err">'+t('l.gt')+'</b>',sgh))}
+   if(best){h+=ln(t('l.rel2',fx(best.v,2)+'‰',esc(best.a),esc(best.b),fx(best.L,2),rl));h+=ln(t('l.c2',fx(best.v,2),best.v<=rl?t('l.lt'):'<b class="err">'+t('l.gt')+'</b>',rl))}}}
+ h+='<h3>'+t('l.4')+'</h3>';
+ const mc=cl=>cl.reduce((b,c)=>!b||Math.abs(c.f)>Math.abs(b.f)?c:b,null);
+ h+=tb([t('l.cy'),t('l.ns'),t('l.pt'),t('l.no'),'m0 (mm/'+t('l.ns').toLowerCase()+')',t('l.mhm'),t('l.fh')],CY.map(cy=>{const r=cy.res,w=r&&mc(r.cl);return[cy.c,r?r.nst:'-',r?r.nN:'-',r?r.nO:'-',r?fx(r.mu,2):'-',r?fx(r.mw,2):'-',w?fx(Math.abs(w.f),2)+' / '+fx(w.lim,2):'-']}));
+ const tb2=(h1,h2,b)=>'<div class="sc"><table class="w"><tr>'+h1.map(x=>'<th>'+x+'</th>').join('')+'</tr><tr>'+h2.map(x=>'<th>'+x+'</th>').join('')+'</tr>'+b.map(r=>'<tr>'+r.map((x,i)=>'<td'+(i===1||i===2?' class="l"':'')+'>'+esc(x)+'</td>').join('')+'</tr>').join('')+'</table></div>';
+ const sb=(x,y)=>x<y?-1:x>y?1:0;
+ const blk=(r,ttl,sub,fi,note)=>{
+  const us=[];for(let i=0;i<N.length;i++)if(r.used[i])us.push(i);
+  const nw=us.filter(i=>fi.indexOf(i)<0),nf=us.length-nw.length;
+  let w='<h3>'+ttl+'</h3>'+(sub?ln('<b>'+sub+'</b>'):'');
+  w+=ln('<b>'+t('l.s1')+'</b>')+ln('+ '+t('l.npt')+': '+us.length)+ln('+ '+t('l.nfx')+': '+nf)+ln('+ '+t('l.nnw')+': '+nw.length)+ln('+ '+t('l.nob')+': '+r.nO)+ln('+ '+t('l.nsta')+': '+r.nst+' '+t('l.tram'));
+  if(r.cl.length)r.cl.forEach((c,k)=>{w+=ln('<b>'+t('l.tuyen',k+1)+'</b>: '+esc(c.path.join(', ')))+ln('- '+t('l.sumn',fx(c.Lt,0)))+ln('- '+t('l.wh',fx(c.f,2))+(c.bad?' <b class="err">!</b>':''))+ln('- '+t('l.whgh',fx(c.lim,2)))});
+  else w+=ln(t('l.noloop'));
+  w+=ln('<b>'+t('l.s2')+'</b>');
+  w+=tb([t('l.stt'),t('h.name'),'H (m)',t('l.gch')],(r.free?us:fi.slice().sort((a,b)=>sb(N[a],N[b]))).map((i,k)=>[k+1,N[i],f5(Hr[i]),r.free?note:'']));
+  w+=ln('<b>'+t('l.s3')+'</b>');
+  w+=tb([t('l.stt'),t('h.name'),'H (m)',t('d.m')],nw.slice().sort((a,b)=>sb(N[a],N[b])).map((i,k)=>[k+1,N[i],f5(r.H[i]),fx(r.m[i],2)]));
+  w+=ln('<b>'+t('l.s4')+'</b>');
+  w+=tb2(['S',t('l.pi'),t('l.pj'),'[n]',t('l.trd'),'SHC',t('l.tbs'),'SSTP'],['TT','(i)','(j)','(tr)','(m)','(mm)','(m)','(mm)'],r.O.map((o,k)=>[k+1,N[o.i],N[o.j],fx(o.n,0),f5(o.h),fx(r.V[k],2),f5(o.h+r.V[k]/1000),fx(r.M[k],2)]));
+  w+=ln('<b>'+t('l.s5')+'</b>');
+  w+=ln('- '+t('l.m0',fx(r.mu,2)));
+  let wp=-1;nw.forEach(i=>{if(wp<0||r.m[i]>r.m[wp])wp=i});if(wp>=0)w+=ln('- '+t('l.wp',esc(N[wp]),fx(r.m[wp],2)));
+  let wo=-1;r.O.forEach((o,k)=>{if(wo<0||r.M[k]>r.M[wo])wo=k});if(wo>=0)w+=ln('- '+t('l.wd',esc(N[r.O[wo].i]),esc(N[r.O[wo].j]),fx(r.M[wo],2)));
+  return w};
+ CY.forEach(cy=>{const d=dt[cy.c],sub=t('l.ach',cy.c,esc(d?d.s:''));
+  if(cy.bt)h+=blk(cy.bt,t('l.bsb'),sub,[],t('l.freen'));
+  if(cy.res){const fi=[];for(let i=0;i<nb;i++)if(cy.F[i]&&cy.res.used[i])fi.push(i);h+=blk(cy.res,t('l.bs'),sub,fi,'')}
+  const fx0=[];for(let i=0;i<nb;i++)if(cy.F[i])fx0.push(N[i]);h+=ln(t('l.fixed',esc(fx0.join(', '))))});
+ h+='</div><section class="card noprint"><div class="bar"><button class="main" data-r="1">'+t('b.copy')+'</button><button data-p="1">'+t('b.print')+'</button><button data-w="1">'+t('b.word')+'</button></div><h2>'+t('d.out')+'</h2><textarea id="o3" readonly>'+esc(csv)+'</textarea><p class="bar"><button data-c="o3">'+t('d.cph')+'</button></p></section>';
+ const Rr=$('lres');Rr.innerHTML=h;
+ Rr.querySelectorAll('button[data-c]').forEach(b=>b.onclick=()=>{const x=$(b.dataset.c);x.select();try{navigator.clipboard.writeText(x.value).catch(()=>document.execCommand('copy'))}catch(e){document.execCommand('copy')}});
+ Rr.querySelector('[data-r]').onclick=()=>{const r=document.createRange();r.selectNode($('rep3'));const g=getSelection();g.removeAllRanges();g.addRange(r);try{document.execCommand('copy')}catch(e){}g.removeAllRanges()};
+ Rr.querySelector('[data-p]').onclick=()=>window.print();Rr.querySelector('[data-w]').onclick=()=>wordDoc('rep3','QuanTracLun.doc');
+ if(!q)Rr.scrollIntoView({behavior:'smooth'})}
+Object.assign(I18N.vi,{'l.bs':`KẾT QUẢ BÌNH SAI LƯỚI QUAN TRẮC LÚN CÔNG TRÌNH`,'l.bsb':`KẾT QUẢ BÌNH SAI LƯỚI MỐC CHUẨN`,'l.s1':`I. Các chỉ tiêu kỹ thuật của lưới`,'l.s2':`II. Số liệu khởi tính`,'l.s3':`III. Kết quả độ cao sau bình sai`,'l.s4':`IV. Trị đo và các đại lượng bình sai`,'l.s5':`V. Kết quả đánh giá độ chính xác`,'l.npt':`Tổng số điểm`,'l.nfx':`Số điểm gốc`,'l.nnw':`Số điểm mới lập`,'l.nob':`Số lượng trị đo`,'l.nsta':`Tổng số trạm máy`,'l.tram':`trạm`,'l.tuyen':`Tuyến {0}`,'l.sumn':`Tổng số trạm máy [n] = {0} (trạm)`,'l.wh':`Sai số khép Wh = {0} (mm)`,'l.whgh':`Sai số khép cho phép Wh(gh) = {0} (mm)`,'l.noloop':`Lưới không có tuyến khép.`,'l.stt':`STT`,'l.gch':`Ghi chú`,'l.freen':`Bình sai tự do: độ cao chu kỳ đầu`,'l.pi':`Điểm sau`,'l.pj':`Điểm trước`,'l.trd':`Trị đo`,'l.tbs':`Trị B.Sai`,'l.m0':`Sai số trung phương trọng số đơn vị mo = ± {0} mm/Trạm`,'l.wp':`SSTP độ cao điểm yếu nhất : mH({0}) = {1} (mm).`,'l.wd':`SSTP chênh cao yếu nhất : m({0} - {1}) = {2} (mm)`});
+Object.assign(I18N.en,{'l.bs':`SETTLEMENT MONITORING NETWORK ADJUSTMENT RESULTS`,'l.bsb':`REFERENCE BENCHMARK NETWORK ADJUSTMENT RESULTS`,'l.s1':`I. Network specifications`,'l.s2':`II. Starting data`,'l.s3':`III. Adjusted heights`,'l.s4':`IV. Observations and adjusted quantities`,'l.s5':`V. Accuracy assessment`,'l.npt':`Total points`,'l.nfx':`Fixed points`,'l.nnw':`New points`,'l.nob':`Observations`,'l.nsta':`Total stations`,'l.tram':`stations`,'l.tuyen':`Line {0}`,'l.sumn':`Total stations [n] = {0}`,'l.wh':`Misclosure Wh = {0} (mm)`,'l.whgh':`Allowable misclosure Wh(gh) = {0} (mm)`,'l.noloop':`The network has no closing line.`,'l.stt':`No.`,'l.gch':`Note`,'l.freen':`Free adjustment: first-epoch height`,'l.pi':`Point i (from)`,'l.pj':`Point j (to)`,'l.trd':`Observed`,'l.tbs':`Adjusted`,'l.m0':`Std. error of unit weight m0 = ± {0} mm/station`,'l.wp':`Weakest point height error: mH({0}) = {1} (mm).`,'l.wd':`Weakest height difference error: m({0} - {1}) = {2} (mm)`});
+Object.assign(I18N.vi,{'l.prj':`Dự án`,'l.imp':`Nhập từ file máy thủy bình Leica (GSI-8 / GSI-16)`,'l.file':`File đo (.gsi, .txt, .dat), chọn được nhiều file`,'l.impcy':`Chu kỳ của các file này`,'l.tp':`Tiền tố tên điểm chuyển (cách nhau dấu phẩy)`,'l.impb':`Nhập vào bảng tuyến đo`,'l.impok':`Đã nhập {0} tuyến ({1} trạm) từ {2} file vào bảng tuyến đo.`,'l.imperr':`Không đọc được trạm nào (cần chọn file và chu kỳ; file phải có mã 331/332 của máy thủy bình điện tử).`});
+Object.assign(I18N.en,{'l.prj':`Project`,'l.imp':`Import from Leica digital level (GSI-8 / GSI-16)`,'l.file':`Data files (.gsi, .txt, .dat), multiple allowed`,'l.impcy':`Epoch of these files`,'l.tp':`Turning-point name prefixes (comma separated)`,'l.impb':`Import into lines table`,'l.impok':`Imported {0} lines ({1} stations) from {2} file(s).`,'l.imperr':`No station could be read (choose files and an epoch; files need Leica codes 331/332).`});
+Object.assign(I18N.zh,{'ls.t':"沉降观测",'ls.d':"多期平差、基准点稳定性检验、沉降报告",'ls.h1':"沉降观测：平差与报告",'l.gb':"基准点（起算点）",'l.gc':"观测周期",'l.gtt':"各周期水准路线",'l.gx':"点位坐标（可选）",'l.cy':"周期",'l.date':"观测日期",'l.note':"荷载 / 备注",'l.nst':"测站数",'hint.ls':"基准点：起算高程（第一周期）。水准路线：每行一个高差，注明周期和测站数（权 p = 1/测站数）。两个基准点之间的路线构成基准网，其余路线构成观测网。仅在需要计算相对差异沉降时才需要坐标。",'l.pr':"建筑物",'l.loc':"地点",'l.mode':"起算方案",'l.m1':"固定基准点高程",'l.m2':"自由平差后检验基准点稳定性",'l.cap':"沉降观测等级",'l.tk':"基准点稳定性系数 (t)",'l.lim':"基准点限差，mm（空白 = 自动计算）",'l.sgh':"允许沉降限值 (mm)",'l.rel':"相对差异沉降限值 (‰)",'l.rc':"报告周期（空白 = 最后一期）",'l.rep':"沉降观测成果报告",'l.cyc':"第 {0} 周期",'l.1':"1. 基准点稳定性评定",'l.1f':"固定方案：观测网平差时，基准点保持其起算高程不变。",'l.t3':"各周期基准点高程汇总表 (m)",'l.t4':"基准点稳定性评定结果",'l.2':"2. 第 {0} 周期沉降观测结果",'l.3':"3. 结论",'l.4':"附录：各周期平差结果",'l.hc':"第 {0} 周期高程 (m)",'l.ds':"沉降量 {0}-{1} (mm)",'l.sp':"速率 (mm/月)",'l.dev':"偏差 (mm)",'l.dl':"限值 (mm)",'l.st':"评定",'l.ok':"稳定",'l.bad':"不稳定（剔除）",'l.avg':"平均沉降量",'l.max':"最大沉降量",'l.maxp':"最大沉降点",'l.min':"最小沉降量",'l.minp':"最小沉降点",'l.avgv':"平均沉降速率 (mm/月)",'l.rel2':"最大相对差异沉降：{1} 与 {2} 之间为 {0}（L = {3} m），限值 {4}‰",'l.c1':"最大沉降量 {0} mm {1} 允许值 [Sgh] = {2} mm。",'l.lt':"小于",'l.gt':"超过",'l.c2':"最大相对差异沉降 {0}‰ {1} 限值 {2}‰。",'l.cl':"路线 {0}（n = {1} 站）：fh = {2} mm，允许 {3} mm",'l.ach':"第 {0} 周期，{1}",'l.pt':"新点",'l.ns':"测站数",'l.no':"观测数",'l.fh':"最大 fh / 允许 (mm)",'l.mhm':"最大 mH (mm)",'l.fixed':"固定基准点：{0}",'l.e.row':"第 {0} 行（水准路线）：缺少周期、起/终点、高差或测站数（须 >0）。",'l.e.nocy':"尚未输入水准路线。",'l.e.allunst':"第 {0} 周期：所有基准点均不稳定，无可用起算点。",'l.nodata':"没有任何点在报告周期和第一周期均有数据。",'l.csv':"点名\tH(m)",'l.bs':"建筑物沉降观测网平差成果",'l.bsb':"基准点网平差成果",'l.s1':"一、网的技术指标",'l.s2':"二、起算数据",'l.s3':"三、平差后高程成果",'l.s4':"四、观测值及平差值",'l.s5':"五、精度评定",'l.npt':"总点数",'l.nfx':"起算点数",'l.nnw':"新设点数",'l.nob':"观测值数量",'l.nsta':"总测站数",'l.tram':"站",'l.tuyen':"路线 {0}",'l.sumn':"总测站数 [n] = {0}（站）",'l.wh':"闭合差 Wh = {0} (mm)",'l.whgh':"允许闭合差 Wh(gh) = {0} (mm)",'l.noloop':"网中没有闭合路线。",'l.stt':"序号",'l.gch':"备注",'l.freen':"自由平差：第一周期高程",'l.pi':"起点 i",'l.pj':"终点 j",'l.trd':"观测值",'l.tbs':"平差值",'l.m0':"单位权中误差 m0 = ± {0} mm/站",'l.wp':"最弱点高程中误差：mH({0}) = {1} (mm)。",'l.wd':"最弱高差中误差：m({0} - {1}) = {2} (mm)",'l.prj':"项目",'l.imp':"从 Leica 数字水准仪导入 (GSI-8 / GSI-16)",'l.file':"观测数据文件 (.gsi, .txt, .dat)，可多选",'l.impcy':"这些文件所属周期",'l.tp':"转点名称前缀（以逗号分隔）",'l.impb':"导入水准路线表",'l.impok':"已从 {2} 个文件导入 {0} 条路线（{1} 站）。",'l.imperr':"无法读取任何测站（请选择文件和周期；文件需含 Leica 代码 331/332）。"});
+Object.assign(I18N.ja,{'ls.t':"沈下観測",'ls.d':"多エポック平均計算、基準点の安定性検定、沈下報告書",'ls.h1':"沈下観測：平均計算と報告書",'l.gb':"基準点（既知点）",'l.gc':"観測エポック",'l.gtt':"エポック別水準路線",'l.gx':"点の座標（任意）",'l.cy':"エポック",'l.date':"観測日",'l.note':"荷重／備考",'l.nst':"器械点数",'hint.ls':"基準点：既知標高（第1エポック）。路線：1行につき1つの比高を、エポックと器械点数とともに入力します（重み p = 1/器械点数）。2つの基準点間の路線は基準点網、それ以外は観測網を構成します。座標は相対不同沈下を計算する場合にのみ必要です。",'l.pr':"構造物",'l.loc':"場所",'l.mode':"基準の取り方",'l.m1':"基準点の標高を固定する",'l.m2':"自由網平均後に基準点の安定性を検定する",'l.cap':"沈下観測等級",'l.tk':"基準点安定係数 (t)",'l.lim':"基準点の許容変動量 mm（空欄＝自動）",'l.sgh':"許容沈下量 (mm)",'l.rel':"許容相対不同沈下 (‰)",'l.rc':"報告エポック（空欄＝最終）",'l.rep':"沈下観測成果報告書",'l.cyc':"第{0}エポック",'l.1':"1. 基準点の安定性評価",'l.1f':"固定方式：観測網の平均計算では、基準点は既知標高に固定されます。",'l.t3':"エポック別基準点標高一覧 (m)",'l.t4':"基準点の安定性評価結果",'l.2':"2. 第{0}エポックの沈下観測結果",'l.3':"3. 結論",'l.4':"付録：エポック別平均計算結果",'l.hc':"第{0}エポック標高 (m)",'l.ds':"沈下量 {0}-{1} (mm)",'l.sp':"速度 (mm/月)",'l.dev':"偏差 (mm)",'l.dl':"限界値 (mm)",'l.st':"判定",'l.ok':"安定",'l.bad':"不安定（除外）",'l.avg':"平均沈下量",'l.max':"最大沈下量",'l.maxp':"最大沈下点",'l.min':"最小沈下量",'l.minp':"最小沈下点",'l.avgv':"平均沈下速度 (mm/月)",'l.rel2':"最大相対不同沈下：{1} と {2} の間で {0}（L = {3} m）、限界値 {4}‰",'l.c1':"最大沈下量 {0} mm は許容値 [Sgh] = {2} mm {1}。",'l.lt':"を下回る",'l.gt':"を超過",'l.c2':"最大相対不同沈下 {0}‰ は限界値 {2}‰ {1}。",'l.cl':"路線 {0}（n = {1} 器械点）：fh = {2} mm、許容 {3} mm",'l.ach':"第{0}エポック、{1}",'l.pt':"新点",'l.ns':"器械点数",'l.no':"観測数",'l.fh':"最大 fh／許容 (mm)",'l.mhm':"最大 mH (mm)",'l.fixed':"固定した基準点：{0}",'l.e.row':"{0}行目（路線）：エポック、起点／終点、比高、または器械点数（>0）が未入力です。",'l.e.nocy':"水準路線が入力されていません。",'l.e.allunst':"第{0}エポック：すべての基準点が不安定で、基準となる点が残っていません。",'l.nodata':"報告エポックと第1エポックの両方にデータがある点がありません。",'l.csv':"点名\tH(m)",'l.bs':"沈下観測網 平均計算結果",'l.bsb':"基準点網 平均計算結果",'l.s1':"I. 路線網の諸元",'l.s2':"II. 既知データ",'l.s3':"III. 平均計算後の標高",'l.s4':"IV. 観測値と平均計算値",'l.s5':"V. 精度評価",'l.npt':"総点数",'l.nfx':"既知点数",'l.nnw':"新点数",'l.nob':"観測数",'l.nsta':"総器械点数",'l.tram':"器械点",'l.tuyen':"路線 {0}",'l.sumn':"総器械点数 [n] = {0}",'l.wh':"閉合差 Wh = {0} (mm)",'l.whgh':"許容閉合差 Wh(gh) = {0} (mm)",'l.noloop':"路線網に閉合路線がありません。",'l.stt':"番号",'l.gch':"備考",'l.freen':"自由網平均：第1エポック標高",'l.pi':"起点 i",'l.pj':"終点 j",'l.trd':"観測値",'l.tbs':"平均値",'l.m0':"単位重み標準偏差 m0 = ± {0} mm/器械点",'l.wp':"最弱点の標高誤差：mH({0}) = {1} (mm)。",'l.wd':"最弱比高の誤差：m({0} - {1}) = {2} (mm)",'l.prj':"プロジェクト",'l.imp':"Leica デジタルレベルから取込み (GSI-8 / GSI-16)",'l.file':"観測データファイル (.gsi, .txt, .dat)、複数選択可",'l.impcy':"これらのファイルのエポック",'l.tp':"転点名の接頭辞（カンマ区切り）",'l.impb':"路線表に取り込む",'l.impok':"{2} 個のファイルから {0} 路線（{1} 器械点）を取り込みました。",'l.imperr':"器械点を読み取れませんでした（ファイルとエポックを選択してください。ファイルには Leica コード 331/332 が必要です）。"});
+Object.assign(I18N.ko,{'ls.t':"침하 관측",'ls.d':"다중 주기 평균 계산, 기준점 안정성 검정, 침하 보고서",'ls.h1':"침하 관측: 평균 계산 및 보고서",'l.gb':"기준점(기지점)",'l.gc':"관측 주기",'l.gtt':"주기별 수준 노선",'l.gx':"점 좌표(선택)",'l.cy':"주기",'l.date':"관측일",'l.note':"하중 / 비고",'l.nst':"측점 수",'hint.ls':"기준점: 초기 표고(첫 주기). 노선: 한 행에 하나의 고저차를 주기 및 측점 수와 함께 입력합니다(가중치 p = 1/측점 수). 두 기준점을 잇는 노선은 기준점망을, 나머지 노선은 관측망을 구성합니다. 좌표는 상대 부등침하를 계산할 때만 필요합니다.",'l.pr':"구조물",'l.loc':"위치",'l.mode':"기준 설정 방식",'l.m1':"기준점 표고 고정",'l.m2':"자유망 평균 계산 후 기준점 안정성 검정",'l.cap':"침하 관측 등급",'l.tk':"기준점 안정 계수 (t)",'l.lim':"기준점 한계 편차, mm (공란 = 자동)",'l.sgh':"허용 침하량 한계 (mm)",'l.rel':"상대 부등침하 한계 (‰)",'l.rc':"보고 주기(공란 = 마지막)",'l.rep':"침하 관측 결과 보고서",'l.cyc':"{0}주기",'l.1':"1. 기준점 안정성 평가",'l.1f':"고정 방식: 관측망 평균 계산 시 기준점은 초기 표고로 고정됩니다.",'l.t3':"주기별 기준점 표고 요약표 (m)",'l.t4':"기준점 안정성 평가 결과",'l.2':"2. {0}주기 침하 관측 결과",'l.3':"3. 결론",'l.4':"부록: 주기별 평균 계산 결과",'l.hc':"{0}주기 표고 (m)",'l.ds':"침하량 {0}-{1} (mm)",'l.sp':"속도 (mm/월)",'l.dev':"편차 (mm)",'l.dl':"한계 (mm)",'l.st':"판정",'l.ok':"안정",'l.bad':"불안정(제외)",'l.avg':"평균 침하량",'l.max':"최대 침하량",'l.maxp':"최대 침하점",'l.min':"최소 침하량",'l.minp':"최소 침하점",'l.avgv':"평균 침하 속도 (mm/월)",'l.rel2':"최대 상대 부등침하: {1}과(와) {2} 사이 {0} (L = {3} m), 한계 {4}‰",'l.c1':"최대 침하량 {0} mm은(는) 허용값 [Sgh] = {2} mm {1}.",'l.lt':"미만입니다",'l.gt':"초과합니다",'l.c2':"최대 상대 부등침하 {0}‰은(는) 한계 {2}‰ {1}.",'l.cl':"노선 {0} (n = {1} 측점): fh = {2} mm, 허용 {3} mm",'l.ach':"{0}주기, {1}",'l.pt':"신설점",'l.ns':"측점 수",'l.no':"관측값 수",'l.fh':"최대 fh / 허용 (mm)",'l.mhm':"최대 mH (mm)",'l.fixed':"고정 기준점: {0}",'l.e.row':"{0}행(노선): 주기, 시점/종점, 고저차 또는 측점 수(>0)가 없습니다.",'l.e.nocy':"입력된 수준 노선이 없습니다.",'l.e.allunst':"{0}주기: 모든 기준점이 불안정하여 기준으로 삼을 점이 남아 있지 않습니다.",'l.nodata':"보고 주기와 첫 주기 모두에 자료가 있는 점이 없습니다.",'l.csv':"점명\tH(m)",'l.bs':"침하 관측망 평균 계산 결과",'l.bsb':"기준점망 평균 계산 결과",'l.s1':"I. 망의 제원",'l.s2':"II. 기지 자료",'l.s3':"III. 평균 계산 후 표고",'l.s4':"IV. 관측값 및 평균 계산값",'l.s5':"V. 정밀도 평가",'l.npt':"총 점 수",'l.nfx':"기지점 수",'l.nnw':"신설점 수",'l.nob':"관측값 수",'l.nsta':"총 측점 수",'l.tram':"측점",'l.tuyen':"노선 {0}",'l.sumn':"총 측점 수 [n] = {0}",'l.wh':"폐합차 Wh = {0} (mm)",'l.whgh':"허용 폐합차 Wh(gh) = {0} (mm)",'l.noloop':"망에 폐합 노선이 없습니다.",'l.stt':"번호",'l.gch':"비고",'l.freen':"자유망 평균 계산: 첫 주기 표고",'l.pi':"시점 i",'l.pj':"종점 j",'l.trd':"관측값",'l.tbs':"평균값",'l.m0':"단위 가중치 표준오차 m0 = ± {0} mm/측점",'l.wp':"최약점 표고 오차: mH({0}) = {1} (mm).",'l.wd':"최약 고저차 오차: m({0} - {1}) = {2} (mm)",'l.prj':"프로젝트",'l.imp':"Leica 디지털 레벨에서 가져오기 (GSI-8 / GSI-16)",'l.file':"관측 데이터 파일 (.gsi, .txt, .dat), 여러 개 선택 가능",'l.impcy':"이 파일들의 주기",'l.tp':"전환점 이름 접두어(쉼표로 구분)",'l.impb':"노선 표로 가져오기",'l.impok':"파일 {2}개에서 노선 {0}개(측점 {1}개)를 가져왔습니다.",'l.imperr':"읽을 수 있는 측점이 없습니다(파일과 주기를 선택하세요. 파일에 Leica 코드 331/332가 있어야 합니다)."});
+Object.assign(I18N.fr,{'ls.t':"Suivi des tassements",'ls.d':"Compensation multi-époques, test de stabilité des repères, rapport de tassement",'ls.h1':"Suivi des tassements : compensation et rapport",'l.gb':"Repères de référence",'l.gc':"Époques",'l.gtt':"Cheminements de nivellement par époque",'l.gx':"Coordonnées des points (facultatif)",'l.cy':"Époque",'l.date':"Date",'l.note':"Charge / remarque",'l.nst':"Stations",'hint.ls':"Repères : altitudes initiales (première époque). Cheminements : une dénivelée par ligne, avec son époque et son nombre de stations (poids p = 1/stations). Les cheminements entre deux repères forment le réseau de référence ; les autres forment le réseau de suivi. Les coordonnées ne sont nécessaires que pour le tassement différentiel relatif.",'l.pr':"Ouvrage",'l.loc':"Lieu",'l.mode':"Option de calage",'l.m1':"Maintenir fixes les repères de référence",'l.m2':"Compensation libre, puis test de stabilité des repères",'l.cap':"Classe",'l.tk':"Coefficient de stabilité des repères (t)",'l.lim':"Écart limite des repères, mm (vide = auto)",'l.sgh':"Tassement limite admissible (mm)",'l.rel':"Tassement différentiel relatif limite (‰)",'l.rc':"Époque du rapport (vide = dernière)",'l.rep':"RAPPORT DE SUIVI DES TASSEMENTS",'l.cyc':"Époque {0}",'l.1':"1. Stabilité des repères de référence",'l.1f':"Option fixe : les repères de référence sont maintenus à leurs altitudes initiales lors de la compensation du réseau de suivi.",'l.t3':"Altitudes des repères par époque (m)",'l.t4':"Évaluation de la stabilité des repères",'l.2':"2. Résultats de tassement, époque {0}",'l.3':"3. Conclusions",'l.4':"Annexe : résultats de compensation par époque",'l.hc':"Altitude, époque {0} (m)",'l.ds':"Tassement {0}-{1} (mm)",'l.sp':"Vitesse (mm/mois)",'l.dev':"Écart (mm)",'l.dl':"Limite (mm)",'l.st':"Résultat",'l.ok':"Stable",'l.bad':"Instable (exclu)",'l.avg':"Tassement moyen",'l.max':"Tassement maximal",'l.maxp':"Point de tassement maximal",'l.min':"Tassement minimal",'l.minp':"Point de tassement minimal",'l.avgv':"Vitesse moyenne (mm/mois)",'l.rel2':"Tassement différentiel relatif maximal : {0} entre {1} et {2} (L = {3} m), limite {4}‰",'l.c1':"Le tassement maximal de {0} mm est {1} [Sgh] = {2} mm.",'l.lt':"inférieur à",'l.gt':"SUPÉRIEUR à",'l.c2':"Le tassement différentiel relatif maximal de {0}‰ est {1} la limite de {2}‰.",'l.cl':"Cheminement {0} (n = {1} stations) : fh = {2} mm, admis {3} mm",'l.ach':"Époque {0}, {1}",'l.pt':"Points nouveaux",'l.ns':"Stations",'l.no':"Observations",'l.fh':"fh max / admis (mm)",'l.mhm':"mH max (mm)",'l.fixed':"Repères fixes : {0}",'l.e.row':"Ligne {0} (cheminements) : époque, point de départ/d'arrivée, dénivelée ou stations (>0) manquant(e)(s).",'l.e.nocy':"Aucun cheminement de nivellement saisi.",'l.e.allunst':"Époque {0} : tous les repères sont instables, plus aucun calage possible.",'l.nodata':"Aucun point n'a de données à la fois à l'époque du rapport et à la première époque.",'l.csv':"Point\tH(m)",'l.bs':"RÉSULTATS DE COMPENSATION DU RÉSEAU DE SUIVI DES TASSEMENTS",'l.bsb':"RÉSULTATS DE COMPENSATION DU RÉSEAU DES REPÈRES DE RÉFÉRENCE",'l.s1':"I. Caractéristiques du réseau",'l.s2':"II. Données de départ",'l.s3':"III. Altitudes compensées",'l.s4':"IV. Observations et grandeurs compensées",'l.s5':"V. Évaluation de la précision",'l.npt':"Nombre total de points",'l.nfx':"Points fixes",'l.nnw':"Points nouveaux",'l.nob':"Observations",'l.nsta':"Nombre total de stations",'l.tram':"stations",'l.tuyen':"Cheminement {0}",'l.sumn':"Nombre total de stations [n] = {0}",'l.wh':"Fermeture Wh = {0} (mm)",'l.whgh':"Fermeture admissible Wh(gh) = {0} (mm)",'l.noloop':"Le réseau ne comporte aucun cheminement fermé.",'l.stt':"N°",'l.gch':"Remarque",'l.freen':"Compensation libre : altitude de la première époque",'l.pi':"Point i (départ)",'l.pj':"Point j (arrivée)",'l.trd':"Observé",'l.tbs':"Compensé",'l.m0':"Écart-type de l'unité de poids m0 = ± {0} mm/station",'l.wp':"Erreur d'altitude du point le plus faible : mH({0}) = {1} (mm).",'l.wd':"Erreur de la dénivelée la plus faible : m({0} - {1}) = {2} (mm)",'l.prj':"Projet",'l.imp':"Importer depuis un niveau numérique Leica (GSI-8 / GSI-16)",'l.file':"Fichiers de mesure (.gsi, .txt, .dat), sélection multiple possible",'l.impcy':"Époque de ces fichiers",'l.tp':"Préfixes des noms de points de changement (séparés par des virgules)",'l.impb':"Importer dans le tableau des cheminements",'l.impok':"{0} cheminements ({1} stations) importés depuis {2} fichier(s).",'l.imperr':"Aucune station lisible (choisissez des fichiers et une époque ; les fichiers doivent contenir les codes Leica 331/332)."});
+Object.assign(I18N.ru,{'ls.t':"Мониторинг осадок",'ls.d':"Многоэпохное уравнивание, проверка устойчивости реперов, отчёт об осадках",'ls.h1':"Мониторинг осадок: уравнивание и отчёт",'l.gb':"Опорные реперы",'l.gc':"Циклы наблюдений",'l.gtt':"Ходы нивелирования по циклам",'l.gx':"Координаты точек (необязательно)",'l.cy':"Цикл",'l.date':"Дата",'l.note':"Нагрузка / примечание",'l.nst':"Станции",'hint.ls':"Реперы: исходные отметки (первый цикл). Ходы: одно превышение в строке с указанием цикла и числа станций (вес p = 1/число станций). Ходы между двумя опорными реперами образуют опорную сеть, остальные — наблюдательную сеть. Координаты нужны только для расчёта относительной разности осадок.",'l.pr':"Сооружение",'l.loc':"Местоположение",'l.mode':"Вариант выбора исходных данных",'l.m1':"Опорные реперы закреплены",'l.m2':"Свободное уравнивание с последующей проверкой устойчивости реперов",'l.cap':"Класс",'l.tk':"Коэффициент устойчивости реперов (t)",'l.lim':"Предельное отклонение реперов, мм (пусто = авто)",'l.sgh':"Предельно допустимая осадка (мм)",'l.rel':"Предельная относительная разность осадок (‰)",'l.rc':"Цикл отчёта (пусто = последний)",'l.rep':"ОТЧЁТ О РЕЗУЛЬТАТАХ МОНИТОРИНГА ОСАДОК",'l.cyc':"Цикл {0}",'l.1':"1. Устойчивость опорных реперов",'l.1f':"Вариант с закреплением: при уравнивании наблюдательной сети опорные реперы сохраняют свои исходные отметки.",'l.t3':"Отметки опорных реперов по циклам (м)",'l.t4':"Оценка устойчивости опорных реперов",'l.2':"2. Результаты наблюдений за осадками, цикл {0}",'l.3':"3. Выводы",'l.4':"Приложение: результаты уравнивания по циклам",'l.hc':"Отметка, цикл {0} (м)",'l.ds':"Осадка {0}-{1} (мм)",'l.sp':"Скорость (мм/мес.)",'l.dev':"Отклонение (мм)",'l.dl':"Предел (мм)",'l.st':"Оценка",'l.ok':"Устойчив",'l.bad':"Неустойчив (исключён)",'l.avg':"Средняя осадка",'l.max':"Максимальная осадка",'l.maxp':"Точка максимальной осадки",'l.min':"Минимальная осадка",'l.minp':"Точка минимальной осадки",'l.avgv':"Средняя скорость осадки (мм/мес.)",'l.rel2':"Максимальная относительная разность осадок: {0} между {1} и {2} (L = {3} м), предел {4}‰",'l.c1':"Максимальная осадка {0} мм {1} предельную [Sgh] = {2} мм.",'l.lt':"не превышает",'l.gt':"ПРЕВЫШАЕТ",'l.c2':"Максимальная относительная разность осадок {0}‰ {1} предел {2}‰.",'l.cl':"Ход {0} (n = {1} станций): fh = {2} мм, допустимо {3} мм",'l.ach':"Цикл {0}, {1}",'l.pt':"Новые точки",'l.ns':"Станции",'l.no':"Измерения",'l.fh':"макс. fh / допуск (мм)",'l.mhm':"макс. mH (мм)",'l.fixed':"Закреплённые реперы: {0}",'l.e.row':"Строка {0} (ходы): не указаны цикл, начальная/конечная точка, превышение или число станций (>0).",'l.e.nocy':"Ходы нивелирования не введены.",'l.e.allunst':"Цикл {0}: все реперы неустойчивы, исходных данных для уравнивания не осталось.",'l.nodata':"Нет точек, у которых есть данные и в цикле отчёта, и в первом цикле.",'l.csv':"Точка\tH(м)",'l.bs':"РЕЗУЛЬТАТЫ УРАВНИВАНИЯ СЕТИ МОНИТОРИНГА ОСАДОК СООРУЖЕНИЯ",'l.bsb':"РЕЗУЛЬТАТЫ УРАВНИВАНИЯ СЕТИ ОПОРНЫХ РЕПЕРОВ",'l.s1':"I. Характеристики сети",'l.s2':"II. Исходные данные",'l.s3':"III. Уравненные отметки",'l.s4':"IV. Измерения и уравненные величины",'l.s5':"V. Оценка точности",'l.npt':"Всего точек",'l.nfx':"Исходных точек",'l.nnw':"Новых точек",'l.nob':"Измерений",'l.nsta':"Всего станций",'l.tram':"станций",'l.tuyen':"Ход {0}",'l.sumn':"Всего станций [n] = {0}",'l.wh':"Невязка Wh = {0} (мм)",'l.whgh':"Допустимая невязка Wh(gh) = {0} (мм)",'l.noloop':"В сети нет замкнутых ходов.",'l.stt':"№",'l.gch':"Примечание",'l.freen':"Свободное уравнивание: отметка первого цикла",'l.pi':"Точка i (от)",'l.pj':"Точка j (до)",'l.trd':"Измерено",'l.tbs':"Уравнено",'l.m0':"СКП единицы веса m0 = ± {0} мм/станция",'l.wp':"Погрешность отметки слабейшей точки: mH({0}) = {1} (мм).",'l.wd':"Погрешность слабейшего превышения: m({0} - {1}) = {2} (мм)",'l.prj':"Проект",'l.imp':"Импорт из цифрового нивелира Leica (GSI-8 / GSI-16)",'l.file':"Файлы измерений (.gsi, .txt, .dat), можно выбрать несколько",'l.impcy':"Цикл этих файлов",'l.tp':"Префиксы имён связующих точек (через запятую)",'l.impb':"Импортировать в таблицу ходов",'l.impok':"Импортировано ходов: {0} (станций: {1}) из файлов: {2}.",'l.imperr':"Не удалось прочитать ни одной станции (выберите файлы и цикл; в файлах должны быть коды Leica 331/332)."});
+Object.assign(I18N.es,{'ls.t':"Monitoreo de asentamientos",'ls.d':"Ajuste multiépoca, prueba de estabilidad de puntos de referencia, informe de asentamientos",'ls.h1':"Monitoreo de asentamientos: ajuste e informe",'l.gb':"Puntos de referencia (BM)",'l.gc':"Épocas",'l.gtt':"Líneas de nivelación por época",'l.gx':"Coordenadas de los puntos (opcional)",'l.cy':"Época",'l.date':"Fecha",'l.note':"Carga / nota",'l.nst':"Estaciones",'hint.ls':"Puntos de referencia: cotas iniciales (primera época). Líneas: un desnivel por fila, con su época y número de estaciones (peso p = 1/estaciones). Las líneas entre dos puntos de referencia forman la red de referencia; las demás forman la red de monitoreo. Las coordenadas solo se necesitan para el asentamiento diferencial relativo.",'l.pr':"Estructura",'l.loc':"Ubicación",'l.mode':"Opción de datum",'l.m1':"Mantener fijos los puntos de referencia",'l.m2':"Ajuste libre y luego prueba de estabilidad de los puntos de referencia",'l.cap':"Clase",'l.tk':"Factor de estabilidad de los puntos de referencia (t)",'l.lim':"Desviación límite de los puntos de referencia, mm (vacío = auto)",'l.sgh':"Asentamiento límite admisible (mm)",'l.rel':"Asentamiento diferencial relativo límite (‰)",'l.rc':"Época del informe (vacío = última)",'l.rep':"INFORME DE MONITOREO DE ASENTAMIENTOS",'l.cyc':"Época {0}",'l.1':"1. Estabilidad de los puntos de referencia",'l.1f':"Opción fija: los puntos de referencia se mantienen en sus cotas iniciales en el ajuste de la red de monitoreo.",'l.t3':"Cotas de los puntos de referencia por época (m)",'l.t4':"Evaluación de la estabilidad de los puntos de referencia",'l.2':"2. Resultados de asentamiento, época {0}",'l.3':"3. Conclusiones",'l.4':"Anexo: resultados del ajuste por época",'l.hc':"Cota, época {0} (m)",'l.ds':"Asentamiento {0}-{1} (mm)",'l.sp':"Velocidad (mm/mes)",'l.dev':"Desviación (mm)",'l.dl':"Límite (mm)",'l.st':"Resultado",'l.ok':"Estable",'l.bad':"Inestable (excluido)",'l.avg':"Asentamiento medio",'l.max':"Asentamiento máximo",'l.maxp':"Punto de asentamiento máximo",'l.min':"Asentamiento mínimo",'l.minp':"Punto de asentamiento mínimo",'l.avgv':"Velocidad media (mm/mes)",'l.rel2':"Asentamiento diferencial relativo máximo: {0} entre {1} y {2} (L = {3} m), límite {4}‰",'l.c1':"El asentamiento máximo de {0} mm es {1} [Sgh] = {2} mm.",'l.lt':"menor que",'l.gt':"MAYOR que",'l.c2':"El asentamiento diferencial relativo máximo de {0}‰ es {1} el límite de {2}‰.",'l.cl':"Línea {0} (n = {1} estaciones): fh = {2} mm, admisible {3} mm",'l.ach':"Época {0}, {1}",'l.pt':"Puntos nuevos",'l.ns':"Estaciones",'l.no':"Observaciones",'l.fh':"fh máx. / admisible (mm)",'l.mhm':"mH máx. (mm)",'l.fixed':"Puntos de referencia fijos: {0}",'l.e.row':"Fila {0} (líneas): falta la época, el punto inicial/final, el desnivel o las estaciones (>0).",'l.e.nocy':"No se ha introducido ninguna línea de nivelación.",'l.e.allunst':"Época {0}: todos los puntos de referencia son inestables, no queda datum.",'l.nodata':"Ningún punto tiene datos tanto en la época del informe como en la primera época.",'l.csv':"Punto\tH(m)",'l.bs':"RESULTADOS DEL AJUSTE DE LA RED DE MONITOREO DE ASENTAMIENTOS",'l.bsb':"RESULTADOS DEL AJUSTE DE LA RED DE PUNTOS DE REFERENCIA",'l.s1':"I. Características de la red",'l.s2':"II. Datos de partida",'l.s3':"III. Cotas ajustadas",'l.s4':"IV. Observaciones y magnitudes ajustadas",'l.s5':"V. Evaluación de la precisión",'l.npt':"Total de puntos",'l.nfx':"Puntos fijos",'l.nnw':"Puntos nuevos",'l.nob':"Observaciones",'l.nsta':"Total de estaciones",'l.tram':"estaciones",'l.tuyen':"Línea {0}",'l.sumn':"Total de estaciones [n] = {0}",'l.wh':"Error de cierre Wh = {0} (mm)",'l.whgh':"Error de cierre admisible Wh(gh) = {0} (mm)",'l.noloop':"La red no tiene líneas de cierre.",'l.stt':"N.º",'l.gch':"Nota",'l.freen':"Ajuste libre: cota de la primera época",'l.pi':"Punto i (origen)",'l.pj':"Punto j (destino)",'l.trd':"Observado",'l.tbs':"Ajustado",'l.m0':"Error típico de la unidad de peso m0 = ± {0} mm/estación",'l.wp':"Error de cota del punto más débil: mH({0}) = {1} (mm).",'l.wd':"Error del desnivel más débil: m({0} - {1}) = {2} (mm)",'l.prj':"Proyecto",'l.imp':"Importar desde nivel digital Leica (GSI-8 / GSI-16)",'l.file':"Archivos de datos (.gsi, .txt, .dat), se permiten varios",'l.impcy':"Época de estos archivos",'l.tp':"Prefijos de nombre de los puntos de cambio (separados por comas)",'l.impb':"Importar a la tabla de líneas",'l.impok':"Se importaron {0} líneas ({1} estaciones) de {2} archivo(s).",'l.imperr':"No se pudo leer ninguna estación (elija archivos y una época; los archivos necesitan los códigos Leica 331/332)."});
+Object.assign(I18N.vi,{"l.gtc":"Tuyến đo – Chu kỳ {0}","l.ltnone":"Nhập chu kỳ ở bảng “Chu kỳ đo”, bảng tuyến đo của từng chu kỳ sẽ hiện ra ở đây.","hint.ls":"Mốc chuẩn: cao độ khởi tính (chu kỳ đầu). Chu kỳ đo: nhập số chu kỳ và ngày đo, mỗi chu kỳ có một bảng tuyến đo riêng. Tuyến đo: mỗi dòng một chênh cao kèm số trạm (trọng số p = 1/số trạm). Tuyến nối giữa hai mốc chuẩn dùng cho lưới mốc chuẩn; các tuyến còn lại là lưới quan trắc. Tọa độ chỉ cần khi muốn tính độ lún lệch tương đối.","l.e.row":"Dòng {0} (tuyến đo): thiếu điểm đầu/cuối, chênh cao hoặc số trạm (>0)."});
+Object.assign(I18N.en,{"l.gtc":"Levelling lines – Epoch {0}","l.ltnone":"Enter an epoch in the “Epochs” table; its levelling-lines table will appear here.","hint.ls":"Benchmarks: initial heights (first epoch). Epochs: enter the epoch number and date; each epoch gets its own levelling-lines table. Lines: one height difference per row with its number of stations (weight p = 1/stations). Lines between two benchmarks form the reference network; the others form the monitoring network. Coordinates are only needed for the relative differential settlement.","l.e.row":"Row {0} (lines): missing from/to point, height difference or stations (>0)."});
+Object.assign(I18N.zh,{"l.gtc":"水准路线 – 第 {0} 周期","l.ltnone":"在“观测周期”表中输入周期后，该周期的水准路线表将显示在这里。","hint.ls":"基准点：起算高程（第一周期）。观测周期：输入周期号和观测日期，每个周期有各自的水准路线表。水准路线：每行一个高差及其测站数（权 p = 1/测站数）。两个基准点之间的路线构成基准网，其余路线构成观测网。仅在需要计算相对差异沉降时才需要坐标。","l.e.row":"第 {0} 行（水准路线）：缺少起/终点、高差或测站数（须 >0）。"});
+Object.assign(I18N.ja,{"l.gtc":"水準路線 – 第{0}エポック","l.ltnone":"「観測エポック」表にエポックを入力すると、そのエポックの水準路線表がここに表示されます。","hint.ls":"基準点：既知標高（第1エポック）。観測エポック：エポック番号と観測日を入力すると、エポックごとに水準路線表が作られます。路線：1行につき1つの比高と器械点数を入力します（重み p = 1/器械点数）。2つの基準点間の路線は基準点網、それ以外は観測網を構成します。座標は相対不同沈下を計算する場合にのみ必要です。","l.e.row":"{0}行目（路線）：起点／終点、比高、または器械点数（>0）が未入力です。"});
+Object.assign(I18N.ko,{"l.gtc":"수준 노선 – {0}주기","l.ltnone":"“관측 주기” 표에 주기를 입력하면 해당 주기의 수준 노선 표가 여기에 나타납니다.","hint.ls":"기준점: 초기 표고(첫 주기). 관측 주기: 주기 번호와 관측일을 입력하면 주기마다 수준 노선 표가 생깁니다. 노선: 한 행에 하나의 고저차와 측점 수를 입력합니다(가중치 p = 1/측점 수). 두 기준점을 잇는 노선은 기준점망을, 나머지 노선은 관측망을 구성합니다. 좌표는 상대 부등침하를 계산할 때만 필요합니다.","l.e.row":"{0}행(노선): 시점/종점, 고저차 또는 측점 수(>0)가 없습니다."});
+Object.assign(I18N.fr,{"l.gtc":"Cheminements – Époque {0}","l.ltnone":"Saisissez une époque dans le tableau « Époques » : son tableau de cheminements apparaîtra ici.","hint.ls":"Repères : altitudes initiales (première époque). Époques : saisissez le numéro et la date ; chaque époque a son propre tableau de cheminements. Cheminements : une dénivelée par ligne, avec son nombre de stations (poids p = 1/stations). Les cheminements entre deux repères forment le réseau de référence ; les autres forment le réseau de suivi. Les coordonnées ne sont nécessaires que pour le tassement différentiel relatif.","l.e.row":"Ligne {0} (cheminements) : point de départ/d'arrivée, dénivelée ou stations (>0) manquant(e)(s)."});
+Object.assign(I18N.ru,{"l.gtc":"Ходы нивелирования – цикл {0}","l.ltnone":"Введите цикл в таблице «Циклы наблюдений» — здесь появится таблица ходов этого цикла.","hint.ls":"Реперы: исходные отметки (первый цикл). Циклы: введите номер и дату цикла; для каждого цикла создаётся своя таблица ходов. Ходы: одно превышение в строке с числом станций (вес p = 1/число станций). Ходы между двумя опорными реперами образуют опорную сеть, остальные — наблюдательную сеть. Координаты нужны только для расчёта относительной разности осадок.","l.e.row":"Строка {0} (ходы): не указаны начальная/конечная точка, превышение или число станций (>0)."});
+Object.assign(I18N.es,{"l.gtc":"Líneas de nivelación – Época {0}","l.ltnone":"Introduzca una época en la tabla «Épocas»: su tabla de líneas aparecerá aquí.","hint.ls":"Puntos de referencia: cotas iniciales (primera época). Épocas: introduzca el número y la fecha; cada época tiene su propia tabla de líneas. Líneas: un desnivel por fila, con su número de estaciones (peso p = 1/estaciones). Las líneas entre dos puntos de referencia forman la red de referencia; las demás forman la red de monitoreo. Las coordenadas solo se necesitan para el asentamiento diferencial relativo.","l.e.row":"Fila {0} (líneas): falta el punto inicial/final, el desnivel o las estaciones (>0)."});
+/* Đọc GSI-8/16 của máy thủy bình điện tử: 11 tên điểm, 331/335 mia sau, 332/336 mia trước, 333 ngắm trung gian */
+function gsiParse(txt,tp){
+ const U={'0':1e-3,'6':1e-4,'7':1e-5,'8':1e-6,'1':3.048e-4},S=[];let cur=null;
+ txt.split(/\r?\n/).forEach(l=>{l=l.replace(/^\*/,'').trim();if(!l)return;
+  const w=l.split(/\s+/).map(k=>{const n=/^(33|57)/.test(k)?3:2;return{wi:k.slice(0,n),u:k.charAt(5),sg:k.charAt(6),v:k.slice(7)}}),id=w.find(x=>x.wi==='11'),nm=id?id.v.replace(/^0+(?=.)/,''):'';
+  w.forEach(x=>{if(!/^33[1-6]$/.test(x.wi))return;const v=(x.sg==='-'?-1:1)*Number(x.v)*(U[x.u]||1e-3);if(!isFinite(v))return;
+   if(x.wi==='331'||x.wi==='335'){if(!cur||cur.f.length){cur={bp:'',fp:'',b:[],f:[],i:[]};S.push(cur)}cur.b.push(v);if(x.wi==='331')cur.bp=nm||cur.bp}
+   else if(x.wi==='332'||x.wi==='336'){if(cur){cur.f.push(v);if(x.wi==='332')cur.fp=nm||cur.fp}}
+   else if(x.wi==='333'&&cur&&cur.b.length)cur.i.push({p:nm,v})})});
+ const isT=n=>tp.some(p=>p&&n.toUpperCase().startsWith(p)),av=a=>a.reduce((s,x)=>s+x,0)/a.length,L=[];let run=null,ns=0;
+ S.forEach(s=>{if(!s.b.length||!s.f.length||!s.bp||!s.fp)return;ns++;
+  const cont=run&&run.to===s.bp&&isT(run.to),base=cont?{from:run.from,h:run.h,n:run.n}:{from:s.bp,h:0,n:0},bb=av(s.b),h=bb-av(s.f);
+  if(cont){run.h+=h;run.n++;run.to=s.fp}else{if(run)L.push(run);run={from:s.bp,to:s.fp,h,n:1}}
+  s.i.forEach(q=>{if(q.p)L.push({from:base.from,to:q.p,h:base.h+bb-q.v,n:base.n+1})})});
+ if(run)L.push(run);return{L,ns}}
+$('limp').onclick=async()=>{const fs=[...$('lfile').files],cy=parseInt($('licy').value),tp=$('ltp').value.toUpperCase().split(',').map(x=>x.trim()),m=$('limsg');
+ let L=[],ns=0;if(fs.length&&cy>0)for(const f of fs){const r=gsiParse(await f.text(),tp);L=L.concat(r.L);ns+=r.ns}
+ if(!L.length){m.textContent=t('l.imperr');return}
+ const raw=[...$('lc').querySelectorAll('tbody tr')].map(tr=>[...tr.querySelectorAll('input')].map(i=>i.value.trim()));
+ if(!raw.some(r=>parseInt(r[0])===cy)){const e=raw.findIndex(r=>r.every(v=>v===''));if(e>=0)raw[e][0]=String(cy);else raw.push([String(cy),'','']);fill('lc',raw)}
+ ltSync();const tid=ltById(cy);fill(tid,G(tid).map(r=>r.slice()).concat(L.map(o=>[o.from,o.to,o.h.toFixed(5),String(o.n)])));
+ m.textContent=t('l.impok',L.length,ns,fs.length)};
+
+/* ===== CHỤP ẢNH SỐ LIỆU TUYẾN ĐO =====
+   Ảnh -> OCR (Tesseract.js, tải từ CDN ở lần đầu) -> bảng "đọc từ ảnh" để kiểm tra/sửa -> bấm "Đưa vào bảng tuyến đo".
+   Không tự bình sai. Quy ước cột giống bảng tuyến đo: Điểm đầu | Điểm cuối | Chênh cao (m) | Số trạm. */
+Object.assign(I18N.vi,{'ph.t':`Chụp ảnh số liệu tuyến đo`,'ph.d':`Chụp (hoặc chọn) ảnh bảng số liệu có các cột: điểm đầu, điểm cuối, chênh cao (m), số trạm. Chương trình đọc chữ trong ảnh và đưa vào bảng bên dưới để bạn kiểm tra, sửa. Chỉ khi bấm "Đưa vào bảng tuyến đo" thì số liệu mới sang bảng của chu kỳ; chương trình không tự bình sai. Lần đọc đầu tiên cần có mạng để tải bộ đọc chữ.`,'ph.cy':`Chu kỳ nhận số liệu`,'ph.cam':`Chụp ảnh`,'ph.pick':`Chọn ảnh từ máy`,'ph.read':`Đọc ảnh`,'ph.tab':`Số liệu đọc từ ảnh (kiểm tra, sửa)`,'ph.rep':`Thay thế số liệu đã có của chu kỳ này (mặc định: thêm vào cuối)`,'ph.chk':`Kiểm tra lại`,'ph.put':`Đưa vào bảng tuyến đo`,'ph.clr':`Xóa bảng đọc ảnh`,'ph.raw':`Văn bản thô đọc được từ ảnh`,
+'ph.noimg':`Chưa chọn ảnh.`,'ph.load':`Đang tải bộ đọc chữ…`,'ph.prog':`Đang đọc ảnh… {0}%`,'ph.err':`Không đọc được ảnh: {0}`,'ph.empty':`Không nhận ra dòng số liệu nào. Hãy chụp gần hơn, đủ sáng, thẳng góc; xem văn bản thô bên dưới.`,'ph.done':`Đã đọc {0} dòng số liệu (bỏ qua {1} dòng không phải số liệu). Hãy đối chiếu từng dòng với ảnh.`,'ph.nocy':`Chu kỳ nhận số liệu chưa hợp lệ.`,'ph.nodata':`Bảng đọc ảnh đang trống.`,'ph.ok':`Đã đưa {0} dòng vào bảng tuyến đo chu kỳ {1}. Chưa bình sai.`,'ph.lib':`Không tải được bộ đọc chữ (cần mạng ở lần đầu).`,
+'ph.w':`Dòng {0}: {1}`,'ph.w.name':`thiếu điểm đầu hoặc điểm cuối`,'ph.w.same':`điểm đầu trùng điểm cuối`,'ph.w.dh':`chênh cao không hợp lệ`,'ph.w.dec':`số chữ số thập phân khác các dòng còn lại ({0} chữ số): nghi đọc thiếu/thừa chữ số`,'ph.w.n':`số trạm thiếu hoặc không hợp lệ`,'ph.w.big':`chênh cao quá lớn so với số trạm: nghi đọc sai`,'ph.w.close':`Tuyến {0}: sai số khép {1} mm vượt cho phép {2} mm (dòng {3} đến {4}): nghi có số đọc sai`,'ph.i.close':`Tuyến {0}: sai số khép {1} mm, cho phép {2} mm: đạt`,'ph.i.none':`Chưa phát hiện lỗi rõ ràng. Vẫn nên đối chiếu với ảnh.`});
+Object.assign(I18N.en,{'ph.t':`Photo capture of levelling lines`,'ph.d':`Take (or pick) a photo of a table with columns: from point, to point, height difference (m), stations. The text is read from the photo into the table below for you to check and correct. Data go to the epoch table only when you press "Send to levelling-lines table"; nothing is adjusted automatically. The first read needs internet to download the OCR engine.`,'ph.cy':`Target epoch`,'ph.cam':`Take photo`,'ph.pick':`Pick image file`,'ph.read':`Read photo`,'ph.tab':`Data read from photo (check and edit)`,'ph.rep':`Replace existing data of this epoch (default: append)`,'ph.chk':`Re-check`,'ph.put':`Send to levelling-lines table`,'ph.clr':`Clear photo table`,'ph.raw':`Raw text read from the photo`,
+'ph.noimg':`No image selected.`,'ph.load':`Loading OCR engine…`,'ph.prog':`Reading photo… {0}%`,'ph.err':`Could not read the photo: {0}`,'ph.empty':`No data rows recognised. Retake closer, well lit and square-on; see the raw text below.`,'ph.done':`Read {0} data rows ({1} non-data lines skipped). Compare each row with the photo.`,'ph.nocy':`Invalid target epoch.`,'ph.nodata':`The photo table is empty.`,'ph.ok':`Sent {0} rows to the levelling-lines table of epoch {1}. Not adjusted yet.`,'ph.lib':`Could not load the OCR engine (internet needed the first time).`,
+'ph.w':`Row {0}: {1}`,'ph.w.name':`missing from/to point`,'ph.w.same':`from point equals to point`,'ph.w.dh':`invalid height difference`,'ph.w.dec':`decimal places differ from the other rows ({0} digits): a digit may be missing/extra`,'ph.w.n':`stations missing or invalid`,'ph.w.big':`height difference too large for the number of stations: likely misread`,'ph.w.close':`Line {0}: misclosure {1} mm exceeds allowed {2} mm (rows {3} to {4}): a value may be misread`,'ph.i.close':`Line {0}: misclosure {1} mm, allowed {2} mm: OK`,'ph.i.none':`No obvious problem found. Still compare with the photo.`});
+Object.assign(GC,{pht:{t:'ph.tab',h:['h.from','h.to','h.dh','l.nst'],n:6}});NUMC.pht=[2,3];build('pht');
+/* sửa lỗi OCR hay gặp trong một token số: O->0, l/I->1, S->5, B->8, Z->2, dấu phẩy->chấm */
+const phFix=x=>x.replace(/[\u2014\u2013\u2212]/g,'-').replace(/[Oo]/g,'0').replace(/[lI]/g,'1').replace(/S/g,'5').replace(/B/g,'8').replace(/Z/g,'2').replace(',','.');
+/* tách văn bản OCR thành các dòng: [STT] điểm_đầu điểm_cuối chênh_cao số_trạm */
+function phParse(text){const R=[];let skip=0;
+ String(text).split(/\r?\n/).forEach(raw=>{
+  const s=raw.replace(/[|\t;]/g,' ').replace(/[\u2014\u2013\u2212]/g,'-').replace(/(^|\s)([+-])\s+(?=[\dOoIl])/g,'$1$2').trim();
+  if(!s)return;const tk=s.split(/\s+/);
+  let k=-1;for(let i=1;i<tk.length;i++){if(/^[+-]?\d{0,2}\.\d{3,6}$/.test(phFix(tk[i]))){k=i;break}}
+  if(k<0){skip++;return}
+  const pre=tk.slice(0,k).map(x=>x.replace(/^[^\w]+|[^\w]+$/g,'')).filter(Boolean);
+  if(pre.length>=3&&/^\d{1,3}$/.test(pre[0]))pre.shift();
+  let n='';const nt=tk.slice(k+1).map(phFix).find(x=>/^\d{1,3}$/.test(x));if(nt!==undefined)n=String(parseInt(nt,10));
+  let dh=phFix(tk[k]);if(/^[+-]?\./.test(dh))dh=dh.replace('.','0.');dh=dh.replace(/^\+/,'');
+  R.push({f:pre[0]||'',t:pre[1]||'',dh,n})});
+ return{R,skip}}
+/* kiểm tra bảng đọc ảnh: lỗi từng dòng + sai số khép tuyến sơ bộ (cùng quy ước với bình sai: h = H(điểm cuối) - H(điểm đầu)) */
+function phCheck(){
+ const rows=G('pht'),W=[],I=[],a=$('lcp').value==='1'?0.3:0.5;
+ const dc=rows.map(r=>{const m=String(r[2]).match(/\.(\d+)$/);return m?m[1].length:-1}),cnt={};
+ dc.forEach(d=>{if(d>=0)cnt[d]=(cnt[d]||0)+1});let md=-1,mc=0;for(const d in cnt)if(cnt[d]>mc){mc=cnt[d];md=+d}
+ const G2=rows.map((r,k)=>{let ok=true;const ln=r.ln,f=r[0],to=r[1],h=num(r[2]),n=parseInt(r[3]),w=(m,soft)=>{W.push(t('ph.w',ln,m));if(!soft)ok=false};
+  if(!f||!to)w(t('ph.w.name'));else if(f.toLowerCase()===to.toLowerCase())w(t('ph.w.same'));
+  if(r[2]===''||!isFinite(h))w(t('ph.w.dh'));else if(rows.length>=4&&md>=0&&mc>=0.6*rows.length&&dc[k]!==md)w(t('ph.w.dec',md),1);
+  if(!(n>0))w(t('ph.w.n'));else if(isFinite(h)&&Math.abs(h)/n>2.5)w(t('ph.w.big'),1);
+  return ok?{i:f.toLowerCase(),j:to.toLowerCase(),fo:f,to,h,n,ln}:null});
+ const bm=new Map();G('lb').forEach(r=>{if(r[0]&&r[1]!==''){const v=num(r[1]);if(isFinite(v))bm.set(r[0].toLowerCase(),v)}});
+ let run=[];const flush=()=>{if(!run.length)return;const A=run[0],B=run[run.length-1],sh=run.reduce((q,o)=>q+o.h,0),L=run.reduce((q,o)=>q+o.n,0);let f=null;
+  if(A.i===B.j)f=sh*1000;else if(bm.has(A.i)&&bm.has(B.j))f=(sh-(bm.get(B.j)-bm.get(A.i)))*1000;
+  if(f!==null){const lim=a*Math.sqrt(L),rt=A.fo+'→'+B.to;
+   if(Math.abs(f)>lim)W.push(t('ph.w.close',rt,f.toFixed(2),lim.toFixed(2),A.ln,B.ln));else I.push(t('ph.i.close',rt,f.toFixed(2),lim.toFixed(2)))}
+  run=[]};
+ G2.forEach(g=>{if(!g){flush();return}if(run.length&&run[run.length-1].j!==g.i)flush();run.push(g)});flush();
+ $('phsum').innerHTML=W.map(x=>'<p class="ph-w">⚠ '+esc(x)+'</p>').join('')+I.map(x=>'<p class="ph-i">✓ '+esc(x)+'</p>').join('')+(rows.length&&!W.length&&!I.length?'<p class="ph-i">'+esc(t('ph.i.none'))+'</p>':'');
+ return W.length}
+/* tải Tesseract.js khi cần (phiên bản cố định) */
+function phLoad(){if(window.Tesseract)return Promise.resolve();
+ return new Promise((ok,ko)=>{const e=document.createElement('script');e.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';e.onload=ok;e.onerror=()=>ko(new Error(t('ph.lib')));document.head.appendChild(e)})}
+/* ảnh -> xám + kéo giãn tương phản, phóng/thu về cỡ phù hợp cho OCR */
+function phCanvas(img){const mx=Math.max(img.naturalWidth,img.naturalHeight),sc=mx<1600?Math.min(2,1600/mx):Math.min(1,2400/mx),w=Math.round(img.naturalWidth*sc),h=Math.round(img.naturalHeight*sc),c=document.createElement('canvas');
+ c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,w,h);
+ const d=x.getImageData(0,0,w,h),p=d.data,hs=new Uint32Array(256);
+ for(let i=0;i<p.length;i+=4){const g=Math.round(0.299*p[i]+0.587*p[i+1]+0.114*p[i+2]);p[i]=p[i+1]=p[i+2]=g;hs[g]++}
+ const tot=w*h;let lo=0,hi=255,q=0;for(let i=0;i<256;i++){q+=hs[i];if(q>=tot*0.02){lo=i;break}}q=0;for(let i=255;i>=0;i--){q+=hs[i];if(q>=tot*0.02){hi=i;break}}
+ const rg=Math.max(hi-lo,1);for(let i=0;i<p.length;i+=4){const v=Math.max(0,Math.min(255,(p[i]-lo)*255/rg));p[i]=p[i+1]=p[i+2]=v}
+ x.putImageData(d,0,0);return c}
+let phFile=null;
+function phSet(f){if(!f)return;phFile=f;const im=$('phimg');if(im.dataset.u)URL.revokeObjectURL(im.dataset.u);const u=URL.createObjectURL(f);im.dataset.u=u;im.src=u;im.style.display='block';$('phmsg').textContent=''}
+$('phcam').onchange=e=>{phSet(e.target.files[0]);e.target.value=''};
+$('phpick').onchange=e=>{phSet(e.target.files[0]);e.target.value=''};
+$('phgo').onclick=async()=>{const m=$('phmsg'),b=$('phgo');if(!phFile){m.textContent=t('ph.noimg');return}
+ b.disabled=true;
+ try{m.textContent=t('ph.load');await phLoad();const im=$('phimg');try{await im.decode()}catch(e){}
+  const cv=phCanvas(im),wk=await Tesseract.createWorker('eng',1,{logger:o=>{if(o.status==='recognizing text')m.textContent=t('ph.prog',Math.round(o.progress*100))}});
+  await wk.setParameters({tessedit_pageseg_mode:'6',preserve_interword_spaces:'1',tessedit_char_whitelist:'0123456789.,-+_/ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz '});
+  const r=await wk.recognize(cv);await wk.terminate();
+  $('phraw').value=r.data.text;const P=phParse(r.data.text);
+  if(!P.R.length){m.textContent=t('ph.empty');return}
+  fill('pht',G('pht').map(x=>x.slice()).concat(P.R.map(o=>[o.f,o.t,o.dh,o.n])));
+  m.textContent=t('ph.done',P.R.length,P.skip);phCheck()}
+ catch(e){m.textContent=t('ph.err',e&&e.message||e)}
+ finally{b.disabled=false}};
+$('pht').addEventListener('change',phCheck);$('phchk').onclick=phCheck;
+$('phclr').onclick=()=>{fill('pht',[]);$('phsum').innerHTML='';$('phraw').value=''};
+$('phput').onclick=()=>{const m=$('phmsg'),cy=parseInt($('phcy').value),rows=G('pht').map(r=>r.slice(0,4));
+ if(!(cy>0)){m.textContent=t('ph.nocy');return}if(!rows.length){m.textContent=t('ph.nodata');return}
+ const raw=[...$('lc').querySelectorAll('tbody tr')].map(tr=>[...tr.querySelectorAll('input')].map(i=>i.value.trim()));
+ if(!raw.some(r=>parseInt(r[0])===cy)){const e=raw.findIndex(r=>r.every(v=>v===''));if(e>=0)raw[e][0]=String(cy);else raw.push([String(cy),'','']);fill('lc',raw)}
+ ltSync();const tid=ltById(cy),old=$('phrp').checked?[]:G(tid).map(r=>r.slice());fill(tid,old.concat(rows));
+ m.textContent=t('ph.ok',rows.length,cy);phCheck();$(tid).scrollIntoView({behavior:'smooth',block:'center'})};
+$('lgo').onclick=()=>{try{const S=lSolve();LR.lres=q=>lShow(S,q);lShow(S)}catch(e){errOut('lres',e)}};
+$('lcl').onclick=()=>{['lb','lc','lx'].forEach(i=>fill(i,[]));ltDivs().forEach(d=>fill(d.id,[]));lcDef();clr('lres')};
+$('lex').onclick=()=>{ltDivs().forEach(d=>fill(d.id,[]));fill('lb',[['BM1','2.57383'],['BM2','2.16200'],['BM3','2.28956']]);
+ fill('lc',[['1','01/03/2025','Tầng 1'],['2','10/04/2025','Tầng 4'],['3','08/05/2025','Tầng 7']]);ltSync();
+ const B0=['-0.41183','0.12756','0.28427','-2.80000','0.01500','2.37320'],ST=['7','7','9','5','4','5'],PP=[['BM1','BM2'],['BM2','BM3'],['BM3','BM1'],['BM1','M1'],['M1','M2'],['M2','BM2']],
+  mk=e=>PP.map((p,i)=>[p[0],p[1],(parseFloat(B0[i])+e[i]).toFixed(5),ST[i]]);
+ fill(ltById(1),mk([0,0,0,0,0,0]));fill(ltById(2),mk([-0.00007,-0.00006,0.00018,-0.00050,0.00020,0.00030]));fill(ltById(3),mk([0.00010,-0.00004,-0.00012,-0.00090,0.00030,0.00050]));
+ fill('lx',[['M1','0','0'],['M2','10','0']]);$('lpn').value='Ví dụ';$('lmd').value='fixed';clr('lres')};
+/* ===== LOGO GÓC TRÊN BÊN PHẢI MỖI TRANG IN: bọc báo cáo trong bảng có <thead> (trình duyệt lặp thead ở đầu mỗi trang), chỉ khi in ===== */
+function layWrap(on){document.querySelectorAll('.rep').forEach(r=>{const w=r.querySelector(':scope>table.lay');
+ if(on&&!w){const t=document.createElement('table');t.className='lay';t.innerHTML='<thead><tr><td><img src="logo.png" alt=""></td></tr></thead><tbody><tr><td></td></tr></tbody>';
+  const c=t.querySelector('tbody td');while(r.firstChild)c.appendChild(r.firstChild);r.appendChild(t)}
+ else if(!on&&w){const c=w.querySelector('tbody td');while(c.firstChild)r.insertBefore(c.firstChild,w);w.remove()}})}
+addEventListener('beforeprint',()=>layWrap(true));addEventListener('afterprint',()=>layWrap(false));
+/* điều hướng giữa các màn hình */
+let nav=0;
+function route(){const h=location.hash.slice(1);$('v-mb').hidden=h!=='mb';$('v-dc').hidden=h!=='dc';$('v-ls').hidden=h!=='ls';$('v-home').hidden=(h==='mb'||h==='dc'||h==='ls');window.scrollTo(0,0)}
+addEventListener('hashchange',()=>{nav++;route()});
+document.querySelectorAll('.back').forEach(b=>b.onclick=()=>{if(nav>0)history.back();else location.replace('#home')});
+route();
+/* ===== ĐA NGÔN NGỮ ===== */
+function applyLang(){
+ document.documentElement.lang=lang;document.title=t('title');
+ document.querySelectorAll('[data-i]').forEach(el=>{el.textContent=el.dataset.a?t(el.dataset.i,el.dataset.a):t(el.dataset.i)});
+ const sel=$('lang');sel.value=lang;sel.setAttribute('aria-label',t('lang'));
+ ['res','hres','lres'].forEach(id=>{if(LR[id])LR[id](1)})}
+(function(){const sel=$('lang');sel.innerHTML=Object.keys(LANGS).map(k=>'<option value="'+k+'">'+LANGS[k]+'</option>').join('');
+ sel.onchange=()=>{lang=sel.value;try{localStorage.setItem('bs-lang',lang)}catch(e){}applyLang()};applyLang()})();
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){})})}
+</script></body></html>

@@ -1,0 +1,13 @@
+/.well-known/assetlinks.json
+  Content-Type: application/json
+  Access-Control-Allow-Origin: *
+
+/assetlinks.json
+  Content-Type: application/json
+  Access-Control-Allow-Origin: *
+
+/sw.js
+  Cache-Control: no-cache
+
+/manifest.webmanifest
+  Content-Type: application/manifest+json
